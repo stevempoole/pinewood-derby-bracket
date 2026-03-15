@@ -1,5 +1,295 @@
-class PinewoodDerbyTournament {
+// Multi-Tournament Pinewood Derby Bracket System
+class TournamentManager {
     constructor() {
+        this.tournaments = new Map();
+        this.activeTournament = null;
+        this.activeTournamentId = null;
+        this.raceDayMode = false;
+        
+        this.initializeElements();
+        this.bindEvents();
+        this.loadTournaments();
+        this.updateTournamentSelector();
+    }
+
+    initializeElements() {
+        // Tournament management elements
+        this.tournamentSelector = document.getElementById('tournamentSelector');
+        this.newTournamentBtn = document.getElementById('newTournamentBtn');
+        this.cloneTournamentBtn = document.getElementById('cloneTournamentBtn');
+        this.deleteTournamentBtn = document.getElementById('deleteTournamentBtn');
+        this.exportTournamentBtn = document.getElementById('exportTournamentBtn');
+        this.importTournamentBtn = document.getElementById('importTournamentBtn');
+        this.importFileInput = document.getElementById('importFileInput');
+        this.raceDayModeBtn = document.getElementById('raceDayModeBtn');
+        this.tournamentManagementSection = document.getElementById('tournamentManagement');
+        this.currentTournamentName = document.getElementById('currentTournamentName');
+        this.tournamentStatus = document.getElementById('tournamentStatus');
+    }
+
+    bindEvents() {
+        this.tournamentSelector?.addEventListener('change', (e) => {
+            if (e.target.value) {
+                this.switchToTournament(e.target.value);
+            }
+        });
+
+        this.newTournamentBtn?.addEventListener('click', () => this.createNewTournament());
+        this.cloneTournamentBtn?.addEventListener('click', () => this.cloneTournament());
+        this.deleteTournamentBtn?.addEventListener('click', () => this.deleteTournament());
+        this.exportTournamentBtn?.addEventListener('click', () => this.exportTournament());
+        this.importTournamentBtn?.addEventListener('click', () => this.importFileInput?.click());
+        this.importFileInput?.addEventListener('change', (e) => this.importTournament(e));
+        this.raceDayModeBtn?.addEventListener('click', () => this.toggleRaceDayMode());
+    }
+
+    createNewTournament() {
+        const name = prompt('Enter tournament name:');
+        if (!name || !name.trim()) return;
+
+        const tournamentId = `tournament_${Date.now()}`;
+        const timestamp = new Date().toLocaleDateString();
+        const tournamentName = `${name.trim()} (${timestamp})`;
+        
+        const tournament = new PinewoodDerbyTournament(tournamentId, tournamentName);
+        this.tournaments.set(tournamentId, tournament);
+        
+        this.switchToTournament(tournamentId);
+        this.saveTournamentsList();
+        this.updateTournamentSelector();
+    }
+
+    cloneTournament() {
+        if (!this.activeTournament) {
+            alert('No active tournament to clone');
+            return;
+        }
+
+        const name = prompt('Enter name for cloned tournament:');
+        if (!name || !name.trim()) return;
+
+        const tournamentId = `tournament_${Date.now()}`;
+        const timestamp = new Date().toLocaleDateString();
+        const tournamentName = `${name.trim()} (${timestamp})`;
+        
+        // Clone the current tournament data
+        const currentData = this.activeTournament.getState();
+        const tournament = new PinewoodDerbyTournament(tournamentId, tournamentName);
+        
+        // Copy racers but reset tournament state
+        tournament.racers = [...currentData.racers];
+        tournament.updateRacersDisplay();
+        
+        this.tournaments.set(tournamentId, tournament);
+        this.switchToTournament(tournamentId);
+        this.saveTournamentsList();
+        this.updateTournamentSelector();
+    }
+
+    deleteTournament() {
+        if (!this.activeTournamentId || this.tournaments.size <= 1) {
+            alert('Cannot delete the only tournament');
+            return;
+        }
+
+        const tournamentName = this.tournaments.get(this.activeTournamentId).name;
+        if (!confirm(`Delete tournament "${tournamentName}"? This cannot be undone.`)) {
+            return;
+        }
+
+        // Remove from localStorage
+        localStorage.removeItem(`tournament_${this.activeTournamentId}`);
+        
+        // Remove from memory
+        this.tournaments.delete(this.activeTournamentId);
+        
+        // Switch to the first available tournament
+        const firstTournamentId = this.tournaments.keys().next().value;
+        if (firstTournamentId) {
+            this.switchToTournament(firstTournamentId);
+        } else {
+            // Create a new tournament if none exist
+            this.createNewTournament();
+        }
+        
+        this.saveTournamentsList();
+        this.updateTournamentSelector();
+    }
+
+    exportTournament() {
+        if (!this.activeTournament) return;
+
+        const data = {
+            name: this.activeTournament.name,
+            exportDate: new Date().toISOString(),
+            tournamentData: this.activeTournament.getState()
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.activeTournament.name.replace(/[^a-z0-9]/gi, '_')}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    importTournament(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                if (!data.tournamentData) {
+                    alert('Invalid tournament file format');
+                    return;
+                }
+
+                const tournamentId = `tournament_${Date.now()}`;
+                const tournamentName = `${data.name} (Imported)`;
+                
+                const tournament = new PinewoodDerbyTournament(tournamentId, tournamentName);
+                tournament.loadState(data.tournamentData);
+                
+                this.tournaments.set(tournamentId, tournament);
+                this.switchToTournament(tournamentId);
+                this.saveTournamentsList();
+                this.updateTournamentSelector();
+                
+                alert('Tournament imported successfully!');
+            } catch (error) {
+                alert('Error importing tournament file');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+        
+        // Reset file input
+        event.target.value = '';
+    }
+
+    switchToTournament(tournamentId) {
+        if (this.activeTournament) {
+            this.activeTournament.saveState();
+        }
+
+        this.activeTournamentId = tournamentId;
+        this.activeTournament = this.tournaments.get(tournamentId);
+        
+        if (this.activeTournament) {
+            this.activeTournament.show();
+            this.updateCurrentTournamentDisplay();
+            localStorage.setItem('activeTournamentId', tournamentId);
+        }
+    }
+
+    updateTournamentSelector() {
+        if (!this.tournamentSelector) return;
+
+        this.tournamentSelector.innerHTML = '<option value="">Select Tournament...</option>';
+        
+        for (const [id, tournament] of this.tournaments) {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = tournament.name;
+            if (id === this.activeTournamentId) {
+                option.selected = true;
+            }
+            this.tournamentSelector.appendChild(option);
+        }
+
+        // Enable/disable management buttons
+        const hasActive = !!this.activeTournamentId;
+        const canDelete = this.tournaments.size > 1;
+        
+        if (this.cloneTournamentBtn) this.cloneTournamentBtn.disabled = !hasActive;
+        if (this.deleteTournamentBtn) this.deleteTournamentBtn.disabled = !hasActive || !canDelete;
+        if (this.exportTournamentBtn) this.exportTournamentBtn.disabled = !hasActive;
+    }
+
+    updateCurrentTournamentDisplay() {
+        if (this.currentTournamentName && this.activeTournament) {
+            this.currentTournamentName.textContent = this.activeTournament.name;
+        }
+        
+        if (this.tournamentStatus && this.activeTournament) {
+            let status = 'Setup';
+            if (this.activeTournament.tournamentStarted) {
+                if (this.activeTournament.isComplete()) {
+                    status = 'Completed';
+                } else {
+                    status = 'In Progress';
+                }
+            }
+            this.tournamentStatus.textContent = status;
+            this.tournamentStatus.className = `tournament-status status-${status.toLowerCase().replace(' ', '-')}`;
+        }
+    }
+
+    toggleRaceDayMode() {
+        this.raceDayMode = !this.raceDayMode;
+        document.body.classList.toggle('race-day-mode', this.raceDayMode);
+        
+        if (this.raceDayModeBtn) {
+            this.raceDayModeBtn.textContent = this.raceDayMode ? '🏁 Exit Race Day' : '🏁 Race Day Mode';
+        }
+        
+        if (this.tournamentManagementSection) {
+            this.tournamentManagementSection.style.display = this.raceDayMode ? 'none' : 'block';
+        }
+    }
+
+    saveTournamentsList() {
+        const tournamentsList = [];
+        for (const [id, tournament] of this.tournaments) {
+            tournamentsList.push({
+                id: id,
+                name: tournament.name,
+                created: tournament.created || new Date().toISOString()
+            });
+        }
+        localStorage.setItem('tournamentsList', JSON.stringify(tournamentsList));
+    }
+
+    loadTournaments() {
+        const savedList = localStorage.getItem('tournamentsList');
+        if (savedList) {
+            const tournamentsList = JSON.parse(savedList);
+            
+            for (const tournamentInfo of tournamentsList) {
+                const tournament = new PinewoodDerbyTournament(tournamentInfo.id, tournamentInfo.name);
+                tournament.loadState();
+                this.tournaments.set(tournamentInfo.id, tournament);
+            }
+        }
+
+        // If no tournaments exist, create a default one
+        if (this.tournaments.size === 0) {
+            const defaultId = `tournament_${Date.now()}`;
+            const defaultName = `Tournament (${new Date().toLocaleDateString()})`;
+            const tournament = new PinewoodDerbyTournament(defaultId, defaultName);
+            this.tournaments.set(defaultId, tournament);
+        }
+
+        // Load the last active tournament or the first one
+        const lastActiveId = localStorage.getItem('activeTournamentId');
+        if (lastActiveId && this.tournaments.has(lastActiveId)) {
+            this.switchToTournament(lastActiveId);
+        } else {
+            const firstId = this.tournaments.keys().next().value;
+            this.switchToTournament(firstId);
+        }
+    }
+}
+
+class PinewoodDerbyTournament {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+        this.created = new Date().toISOString();
         this.racers = [];
         this.bracket = {};
         this.currentRound = 1;
@@ -42,19 +332,19 @@ class PinewoodDerbyTournament {
 
     bindEvents() {
         // Setup phase events
-        this.addRacerBtn.addEventListener('click', () => this.addRacer());
-        this.racerNameInput.addEventListener('keypress', (e) => {
+        this.addRacerBtn?.addEventListener('click', () => this.addRacer());
+        this.racerNameInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addRacer();
         });
-        this.add8Btn.addEventListener('click', () => this.addQuickRacers(8));
-        this.add16Btn.addEventListener('click', () => this.addQuickRacers(16));
-        this.startTournamentBtn.addEventListener('click', () => this.startTournament());
-        this.clearAllBtn.addEventListener('click', () => this.clearAllRacers());
+        this.add8Btn?.addEventListener('click', () => this.addQuickRacers(8));
+        this.add16Btn?.addEventListener('click', () => this.addQuickRacers(16));
+        this.startTournamentBtn?.addEventListener('click', () => this.startTournament());
+        this.clearAllBtn?.addEventListener('click', () => this.clearAllRacers());
 
         // Tournament phase events
-        this.backToSetupBtn.addEventListener('click', () => this.backToSetup());
-        this.resetTournamentBtn.addEventListener('click', () => this.resetTournament());
-        this.newTournamentBtn.addEventListener('click', () => this.newTournament());
+        this.backToSetupBtn?.addEventListener('click', () => this.backToSetup());
+        this.resetTournamentBtn?.addEventListener('click', () => this.resetTournament());
+        this.newTournamentBtn?.addEventListener('click', () => this.newTournament());
     }
 
     updateDateTime() {
@@ -65,11 +355,13 @@ class PinewoodDerbyTournament {
             month: 'long', 
             day: 'numeric' 
         };
-        this.tournamentDate.textContent = now.toLocaleDateString('en-US', options);
+        if (this.tournamentDate) {
+            this.tournamentDate.textContent = now.toLocaleDateString('en-US', options);
+        }
     }
 
     addRacer() {
-        const name = this.racerNameInput.value.trim();
+        const name = this.racerNameInput?.value.trim();
         if (!name) {
             alert('Please enter a racer name');
             return;
@@ -94,6 +386,7 @@ class PinewoodDerbyTournament {
         this.racerNameInput.value = '';
         this.updateRacersDisplay();
         this.racerNameInput.focus();
+        this.saveState();
     }
 
     addQuickRacers(count) {
@@ -113,30 +406,40 @@ class PinewoodDerbyTournament {
         }
 
         this.updateRacersDisplay();
+        this.saveState();
     }
 
     removeRacer(racerId) {
         this.racers = this.racers.filter(racer => racer.id !== racerId);
         this.updateRacersDisplay();
+        this.saveState();
     }
 
     updateRacersDisplay() {
-        this.racerCount.textContent = this.racers.length;
-        this.participantCount.textContent = `${this.racers.length} racers`;
+        if (this.racerCount) {
+            this.racerCount.textContent = this.racers.length;
+        }
+        if (this.participantCount) {
+            this.participantCount.textContent = `${this.racers.length} racers`;
+        }
         
-        this.racersGrid.innerHTML = '';
-        this.racers.forEach(racer => {
-            const racerCard = document.createElement('div');
-            racerCard.className = 'racer-card';
-            racerCard.innerHTML = `
-                <span class="racer-name">${racer.name}</span>
-                <button class="remove-racer" onclick="tournament.removeRacer(${racer.id})">&times;</button>
-            `;
-            this.racersGrid.appendChild(racerCard);
-        });
+        if (this.racersGrid) {
+            this.racersGrid.innerHTML = '';
+            this.racers.forEach(racer => {
+                const racerCard = document.createElement('div');
+                racerCard.className = 'racer-card';
+                racerCard.innerHTML = `
+                    <span class="racer-name">${racer.name}</span>
+                    <button class="remove-racer" onclick="tournamentManager.activeTournament.removeRacer(${racer.id})">&times;</button>
+                `;
+                this.racersGrid.appendChild(racerCard);
+            });
+        }
 
         // Enable/disable start button
-        this.startTournamentBtn.disabled = this.racers.length < 4;
+        if (this.startTournamentBtn) {
+            this.startTournamentBtn.disabled = this.racers.length < 4;
+        }
     }
 
     clearAllRacers() {
@@ -145,6 +448,7 @@ class PinewoodDerbyTournament {
         if (confirm('Clear all racers?')) {
             this.racers = [];
             this.updateRacersDisplay();
+            this.saveState();
         }
     }
 
@@ -158,6 +462,7 @@ class PinewoodDerbyTournament {
         this.currentRound = 1;
         this.generateBracket();
         this.showTournamentPhase();
+        this.saveState();
     }
 
     generateBracket() {
@@ -199,20 +504,17 @@ class PinewoodDerbyTournament {
                 racerIndex++;
             }
 
-            // Add second participant or bye
+            // Add second participant
             if (racerIndex < shuffledRacers.length) {
                 match.participants.push({
                     racer: shuffledRacers[racerIndex],
                     score: 0
                 });
                 racerIndex++;
-            } else {
-                // Bye - first participant automatically wins
-                match.participants.push({
-                    racer: { name: 'BYE', id: 'bye' },
-                    score: 0,
-                    isBye: true
-                });
+            }
+
+            // If only one participant, they get a bye
+            if (match.participants.length === 1) {
                 match.winner = match.participants[0].racer;
                 match.completed = true;
             }
@@ -220,154 +522,172 @@ class PinewoodDerbyTournament {
             this.bracket[1].push(match);
         }
 
-        // Generate subsequent rounds
+        // Create placeholder matches for subsequent rounds
         for (let round = 2; round <= this.maxRounds; round++) {
-            const prevRoundMatches = this.bracket[round - 1].length;
-            const thisRoundMatches = Math.ceil(prevRoundMatches / 2);
-
-            for (let i = 0; i < thisRoundMatches; i++) {
+            const numMatches = Math.pow(2, this.maxRounds - round);
+            for (let i = 0; i < numMatches; i++) {
                 this.bracket[round].push({
                     id: `r${round}m${i}`,
                     round: round,
                     participants: [],
                     winner: null,
-                    completed: false,
-                    prevMatches: [
-                        this.bracket[round - 1][i * 2],
-                        this.bracket[round - 1][i * 2 + 1]
-                    ].filter(match => match) // Remove undefined matches
+                    completed: false
                 });
             }
         }
+    }
 
+    showTournamentPhase() {
+        if (this.setupPhase) this.setupPhase.style.display = 'none';
+        if (this.tournamentPhase) this.tournamentPhase.style.display = 'block';
         this.updateBracketDisplay();
     }
 
+    showSetupPhase() {
+        if (this.setupPhase) this.setupPhase.style.display = 'block';
+        if (this.tournamentPhase) this.tournamentPhase.style.display = 'none';
+        if (this.winnerAnnouncement) this.winnerAnnouncement.style.display = 'none';
+    }
+
     updateBracketDisplay() {
+        if (!this.bracketContainer) return;
+        
         this.bracketContainer.innerHTML = '';
         
-        const bracket = document.createElement('div');
-        bracket.className = 'bracket';
-
         for (let round = 1; round <= this.maxRounds; round++) {
             const roundDiv = document.createElement('div');
-            roundDiv.className = 'round';
+            roundDiv.className = 'bracket-round';
             
-            const roundTitle = document.createElement('div');
-            roundTitle.className = 'round-title';
-            roundTitle.textContent = this.getRoundName(round);
-            roundDiv.appendChild(roundTitle);
-
+            const roundHeader = document.createElement('h3');
+            roundHeader.className = 'round-header';
+            roundHeader.textContent = this.getRoundName(round);
+            roundDiv.appendChild(roundHeader);
+            
+            const matchesContainer = document.createElement('div');
+            matchesContainer.className = 'matches-container';
+            
             this.bracket[round].forEach(match => {
                 const matchDiv = this.createMatchElement(match);
-                roundDiv.appendChild(matchDiv);
+                matchesContainer.appendChild(matchDiv);
             });
-
-            bracket.appendChild(roundDiv);
+            
+            roundDiv.appendChild(matchesContainer);
+            this.bracketContainer.appendChild(roundDiv);
         }
-
-        this.bracketContainer.appendChild(bracket);
-        this.updateRoundInfo();
+        
+        this.updateRoundDisplay();
     }
 
     createMatchElement(match) {
         const matchDiv = document.createElement('div');
-        matchDiv.className = `match ${match.completed ? 'completed' : ''}`;
+        matchDiv.className = `match ${match.completed ? 'completed' : 'active'}`;
         matchDiv.dataset.matchId = match.id;
-
-        const participantsDiv = document.createElement('div');
-        participantsDiv.className = 'match-participants';
-
-        match.participants.forEach((participant, index) => {
-            const participantDiv = document.createElement('div');
-            participantDiv.className = `participant ${participant.racer === match.winner ? 'winner' : ''} ${participant.isBye ? 'bye' : ''}`;
-            participantDiv.dataset.participantIndex = index;
-            
-            if (!participant.isBye) {
-                participantDiv.addEventListener('click', () => this.selectWinner(match, participant.racer));
-            }
-
-            participantDiv.innerHTML = `
-                <span class="participant-name">${participant.racer.name}</span>
-                ${!participant.isBye ? `<span class="participant-score">${participant.score || '-'}</span>` : ''}
+        
+        let matchHTML = '<div class="match-header">Race</div>';
+        
+        if (match.participants.length === 0) {
+            matchHTML += '<div class="participant waiting">Waiting for previous round...</div>';
+        } else if (match.participants.length === 1) {
+            // Bye
+            const participant = match.participants[0];
+            matchHTML += `
+                <div class="participant bye">
+                    <span class="name">${participant.racer.name}</span>
+                    <span class="bye-label">BYE</span>
+                </div>
             `;
-
-            participantsDiv.appendChild(participantDiv);
-        });
-
-        matchDiv.appendChild(participantsDiv);
-
-        if (match.winner && !match.participants.some(p => p.isBye)) {
-            const winnerDiv = document.createElement('div');
-            winnerDiv.className = 'match-winner';
-            winnerDiv.textContent = `Winner: ${match.winner.name}`;
-            matchDiv.appendChild(winnerDiv);
+        } else {
+            // Regular match
+            match.participants.forEach((participant, index) => {
+                const isWinner = match.winner && match.winner.id === participant.racer.id;
+                const participantClass = match.completed ? (isWinner ? 'winner' : 'loser') : '';
+                
+                matchHTML += `
+                    <div class="participant ${participantClass}">
+                        <span class="name">${participant.racer.name}</span>
+                        <span class="score">${participant.score}</span>
+                        ${!match.completed ? `<button class="win-btn" onclick="tournamentManager.activeTournament.declareWinner('${match.id}', ${index})">Win</button>` : ''}
+                    </div>
+                `;
+            });
         }
-
+        
+        matchDiv.innerHTML = matchHTML;
         return matchDiv;
     }
 
-    selectWinner(match, winner) {
-        if (match.completed || match.participants.some(p => p.isBye)) return;
-
-        // Check if this match can be played (previous rounds completed)
-        if (match.prevMatches && !match.prevMatches.every(prevMatch => prevMatch.completed)) {
-            alert('Previous matches must be completed first!');
-            return;
-        }
-
-        // Set winner
-        match.winner = winner;
+    declareWinner(matchId, participantIndex) {
+        const match = this.findMatch(matchId);
+        if (!match || match.completed) return;
+        
+        const winner = match.participants[participantIndex];
+        match.winner = winner.racer;
         match.completed = true;
-
+        
+        // Update score (simple win/loss)
+        match.participants.forEach((p, i) => {
+            p.score = i === participantIndex ? 1 : 0;
+        });
+        
+        // Mark loser as eliminated
+        match.participants.forEach((p, i) => {
+            if (i !== participantIndex) {
+                p.racer.eliminated = true;
+            }
+        });
+        
         // Advance winner to next round
         this.advanceWinner(match);
         
-        // Update display
-        this.updateBracketDisplay();
-        
         // Check if tournament is complete
-        this.checkTournamentComplete();
+        if (this.isTournamentComplete()) {
+            this.showWinner(match.winner);
+        }
+        
+        this.updateBracketDisplay();
+        this.saveState();
+        
+        // Update tournament manager display
+        if (window.tournamentManager) {
+            tournamentManager.updateCurrentTournamentDisplay();
+        }
+    }
+
+    findMatch(matchId) {
+        for (let round = 1; round <= this.maxRounds; round++) {
+            const match = this.bracket[round].find(m => m.id === matchId);
+            if (match) return match;
+        }
+        return null;
     }
 
     advanceWinner(completedMatch) {
+        if (completedMatch.round === this.maxRounds) return; // Final round
+        
         const nextRound = completedMatch.round + 1;
-        if (nextRound > this.maxRounds) return;
-
-        // Find the next match this winner should advance to
-        const matchIndex = this.bracket[completedMatch.round].indexOf(completedMatch);
-        const nextMatchIndex = Math.floor(matchIndex / 2);
+        const nextMatchIndex = Math.floor(this.bracket[completedMatch.round].indexOf(completedMatch) / 2);
         const nextMatch = this.bracket[nextRound][nextMatchIndex];
-
+        
         if (nextMatch) {
-            // Determine which position in the next match
-            const position = matchIndex % 2;
-            
-            // Add or update participant
-            while (nextMatch.participants.length <= position) {
-                nextMatch.participants.push({
-                    racer: { name: 'TBD', id: 'tbd' },
-                    score: 0
-                });
-            }
-
-            nextMatch.participants[position] = {
+            nextMatch.participants.push({
                 racer: completedMatch.winner,
                 score: 0
-            };
+            });
         }
     }
 
-    checkTournamentComplete() {
-        const finalMatch = this.bracket[this.maxRounds][0];
-        if (finalMatch && finalMatch.completed) {
-            this.showWinner(finalMatch.winner);
-        }
+    isTournamentComplete() {
+        const finalRound = this.bracket[this.maxRounds];
+        return finalRound && finalRound[0] && finalRound[0].completed;
     }
 
     showWinner(winner) {
-        this.winnerName.textContent = winner.name;
-        this.winnerAnnouncement.style.display = 'flex';
+        if (this.winnerName) {
+            this.winnerName.textContent = winner.name;
+        }
+        if (this.winnerAnnouncement) {
+            this.winnerAnnouncement.style.display = 'block';
+        }
     }
 
     getRoundName(round) {
@@ -375,170 +695,130 @@ class PinewoodDerbyTournament {
         if (round === totalRounds) return 'Final';
         if (round === totalRounds - 1) return 'Semi-Final';
         if (round === totalRounds - 2) return 'Quarter-Final';
-        if (round === 1) return 'First Round';
         return `Round ${round}`;
     }
 
-    updateRoundInfo() {
-        // Find current round (first incomplete round)
-        let currentRound = 1;
-        for (let round = 1; round <= this.maxRounds; round++) {
-            if (this.bracket[round].some(match => !match.completed)) {
-                currentRound = round;
-                break;
-            }
-            if (round === this.maxRounds) {
-                currentRound = this.maxRounds;
-            }
+    updateRoundDisplay() {
+        if (this.currentRoundSpan) {
+            this.currentRoundSpan.textContent = this.currentRound;
         }
-
-        this.currentRound = currentRound;
-        this.currentRoundSpan.textContent = currentRound;
-        this.roundName.textContent = this.getRoundName(currentRound);
-    }
-
-    showTournamentPhase() {
-        this.setupPhase.style.display = 'none';
-        this.tournamentPhase.style.display = 'block';
+        if (this.roundName) {
+            this.roundName.textContent = this.getRoundName(this.currentRound);
+        }
     }
 
     backToSetup() {
-        if (this.tournamentStarted) {
-            if (!confirm('Going back will reset the tournament. Continue?')) {
-                return;
-            }
-        }
-        this.resetTournament();
+        this.showSetupPhase();
     }
 
     resetTournament() {
-        this.tournamentStarted = false;
-        this.bracket = {};
-        this.currentRound = 1;
-        this.winnerAnnouncement.style.display = 'none';
-        this.setupPhase.style.display = 'block';
-        this.tournamentPhase.style.display = 'none';
+        if (confirm('Reset tournament? All progress will be lost.')) {
+            this.tournamentStarted = false;
+            this.bracket = {};
+            this.currentRound = 1;
+            this.maxRounds = 0;
+            
+            // Reset racer elimination status
+            this.racers.forEach(racer => {
+                racer.eliminated = false;
+            });
+            
+            this.showSetupPhase();
+            this.updateRacersDisplay();
+            this.saveState();
+            
+            // Update tournament manager display
+            if (window.tournamentManager) {
+                tournamentManager.updateCurrentTournamentDisplay();
+            }
+        }
     }
 
     newTournament() {
-        this.resetTournament();
-        this.racers = [];
-        this.updateRacersDisplay();
+        if (window.tournamentManager) {
+            tournamentManager.createNewTournament();
+        }
     }
-}
 
-// Initialize tournament when page loads
-let tournament;
-document.addEventListener('DOMContentLoaded', () => {
-    tournament = new PinewoodDerbyTournament();
-});
-
-// Drag and Drop functionality (optional enhancement)
-document.addEventListener('DOMContentLoaded', () => {
-    // Add drag and drop support for reordering racers in setup
-    let draggedElement = null;
-
-    document.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('racer-card')) {
-            draggedElement = e.target;
-            e.target.style.opacity = '0.5';
+    show() {
+        this.updateRacersDisplay();
+        if (this.tournamentStarted) {
+            this.showTournamentPhase();
+            this.updateBracketDisplay();
+        } else {
+            this.showSetupPhase();
         }
-    });
+    }
 
-    document.addEventListener('dragend', (e) => {
-        if (e.target.classList.contains('racer-card')) {
-            e.target.style.opacity = '';
-            draggedElement = null;
-        }
-    });
+    isComplete() {
+        return this.tournamentStarted && this.isTournamentComplete();
+    }
 
-    document.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
+    getState() {
+        return {
+            id: this.id,
+            name: this.name,
+            created: this.created,
+            racers: this.racers,
+            tournamentStarted: this.tournamentStarted,
+            bracket: this.bracket,
+            currentRound: this.currentRound,
+            maxRounds: this.maxRounds
+        };
+    }
 
-    document.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (draggedElement && e.target.classList.contains('racer-card')) {
-            const container = document.getElementById('racersGrid');
-            const allCards = Array.from(container.children);
-            const draggedIndex = allCards.indexOf(draggedElement);
-            const targetIndex = allCards.indexOf(e.target);
-
-            if (draggedIndex !== targetIndex) {
-                // Reorder in the DOM
-                if (draggedIndex < targetIndex) {
-                    container.insertBefore(draggedElement, e.target.nextSibling);
-                } else {
-                    container.insertBefore(draggedElement, e.target);
-                }
-
-                // Reorder in the data array
-                const draggedRacer = tournament.racers[draggedIndex];
-                tournament.racers.splice(draggedIndex, 1);
-                tournament.racers.splice(targetIndex, 0, draggedRacer);
+    loadState(state = null) {
+        if (state) {
+            // Load from provided state (for import)
+            this.racers = state.racers || [];
+            this.tournamentStarted = state.tournamentStarted || false;
+            this.bracket = state.bracket || {};
+            this.currentRound = state.currentRound || 1;
+            this.maxRounds = state.maxRounds || 0;
+        } else {
+            // Load from localStorage
+            const saved = localStorage.getItem(`tournament_${this.id}`);
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                this.racers = savedState.racers || [];
+                this.tournamentStarted = savedState.tournamentStarted || false;
+                this.bracket = savedState.bracket || {};
+                this.currentRound = savedState.currentRound || 1;
+                this.maxRounds = savedState.maxRounds || 0;
             }
         }
-    });
-
-    // Make racer cards draggable
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.racer-card') && !tournament.tournamentStarted) {
-            e.target.closest('.racer-card').draggable = true;
-        }
-    });
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-    // ESC to close winner announcement
-    if (e.key === 'Escape' && tournament.winnerAnnouncement.style.display === 'flex') {
-        tournament.winnerAnnouncement.style.display = 'none';
     }
-    
-    // Ctrl/Cmd + R to reset tournament
-    if ((e.ctrlKey || e.metaKey) && e.key === 'r' && tournament.tournamentStarted) {
-        e.preventDefault();
-        tournament.resetTournament();
-    }
-});
 
-// Auto-save functionality using localStorage
-function saveState() {
-    const state = {
-        racers: tournament.racers,
-        tournamentStarted: tournament.tournamentStarted,
-        bracket: tournament.bracket,
-        currentRound: tournament.currentRound,
-        maxRounds: tournament.maxRounds
-    };
-    localStorage.setItem('pinewoodDerbyState', JSON.stringify(state));
-}
-
-function loadState() {
-    const saved = localStorage.getItem('pinewoodDerbyState');
-    if (saved) {
-        const state = JSON.parse(saved);
-        tournament.racers = state.racers || [];
-        tournament.tournamentStarted = state.tournamentStarted || false;
-        tournament.bracket = state.bracket || {};
-        tournament.currentRound = state.currentRound || 1;
-        tournament.maxRounds = state.maxRounds || 0;
-        
-        tournament.updateRacersDisplay();
-        if (tournament.tournamentStarted) {
-            tournament.showTournamentPhase();
-            tournament.updateBracketDisplay();
-        }
+    saveState() {
+        const state = this.getState();
+        localStorage.setItem(`tournament_${this.id}`, JSON.stringify(state));
     }
 }
 
-// Save state on important actions
+// Global tournament manager
+let tournamentManager;
+
+// Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Load saved state after tournament is initialized
+    // Initialize tournament manager after a short delay to ensure DOM is ready
     setTimeout(() => {
-        loadState();
+        tournamentManager = new TournamentManager();
+        window.tournamentManager = tournamentManager; // Make it globally accessible
     }, 100);
 });
 
-// Auto-save every 10 seconds
-setInterval(saveState, 10000);
+// Save all tournament states periodically
+setInterval(() => {
+    if (tournamentManager && tournamentManager.activeTournament) {
+        tournamentManager.activeTournament.saveState();
+        tournamentManager.saveTournamentsList();
+    }
+}, 10000);
+
+// Handle page refresh/close
+window.addEventListener('beforeunload', (e) => {
+    if (tournamentManager && tournamentManager.activeTournament) {
+        tournamentManager.activeTournament.saveState();
+        tournamentManager.saveTournamentsList();
+    }
+});
