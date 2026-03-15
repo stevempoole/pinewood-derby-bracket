@@ -208,17 +208,7 @@ body {
     border-color: #667eea;
 }
 
-.quick-setup {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
 
-.quick-setup span {
-    color: #666;
-    font-size: 0.9rem;
-}
 
 /* Buttons */
 .btn {

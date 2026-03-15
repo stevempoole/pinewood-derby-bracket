@@ -307,8 +307,7 @@ class PinewoodDerbyTournament {
         this.tournamentPhase = document.getElementById('tournamentPhase');
         this.racerNameInput = document.getElementById('racerNameInput');
         this.addRacerBtn = document.getElementById('addRacerBtn');
-        this.add8Btn = document.getElementById('add8Btn');
-        this.add16Btn = document.getElementById('add16Btn');
+
         this.racersList = document.getElementById('racersList');
         this.racersGrid = document.getElementById('racersGrid');
         this.racerCount = document.getElementById('racerCount');
@@ -336,8 +335,7 @@ class PinewoodDerbyTournament {
         this.racerNameInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addRacer();
         });
-        this.add8Btn?.addEventListener('click', () => this.addQuickRacers(8));
-        this.add16Btn?.addEventListener('click', () => this.addQuickRacers(16));
+
         this.startTournamentBtn?.addEventListener('click', () => this.startTournament());
         this.clearAllBtn?.addEventListener('click', () => this.clearAllRacers());
 
@@ -389,25 +387,7 @@ class PinewoodDerbyTournament {
         this.saveState();
     }
 
-    addQuickRacers(count) {
-        if (this.racers.length > 0) {
-            if (!confirm('This will clear existing racers. Continue?')) {
-                return;
-            }
-            this.racers = [];
-        }
 
-        for (let i = 1; i <= count; i++) {
-            this.racers.push({
-                id: Date.now() + Math.random() + i,
-                name: `Racer ${i}`,
-                eliminated: false
-            });
-        }
-
-        this.updateRacersDisplay();
-        this.saveState();
-    }
 
     removeRacer(racerId) {
         this.racers = this.racers.filter(racer => racer.id !== racerId);
