@@ -1,0 +1,28 @@
+{
+  "racers": [
+    { "name": "Johnny Smith", "ageGroup": "Cubs" },
+    { "name": "Sarah Johnson", "ageGroup": "Cubs" },
+    { "name": "Mike Wilson", "ageGroup": "Cubs" },
+    { "name": "Emma Davis", "ageGroup": "Cubs" },
+    { "name": "Alex Brown", "ageGroup": "Cubs" },
+    { "name": "Katie Miller", "ageGroup": "Cubs" },
+    { "name": "Ryan Garcia", "ageGroup": "Cubs" },
+    { "name": "Zoe Martinez", "ageGroup": "Cubs" },
+    { "name": "Tommy Anderson", "ageGroup": "Webelos" },
+    { "name": "Jessica Thompson", "ageGroup": "Webelos" },
+    { "name": "Brandon Lee", "ageGroup": "Webelos" },
+    { "name": "Mia Rodriguez", "ageGroup": "Webelos" },
+    { "name": "Tyler Clark", "ageGroup": "Webelos" },
+    { "name": "Chloe Lewis", "ageGroup": "Webelos" },
+    { "name": "Jordan Walker", "ageGroup": "Webelos" },
+    { "name": "Sophia Hall", "ageGroup": "Webelos" }
+  ],
+  "metadata": {
+    "created": "2026-03-15",
+    "totalRacers": 16,
+    "ageGroups": {
+      "Cubs": 8,
+      "Webelos": 8
+    }
+  }
+}
