@@ -17,10 +17,14 @@ class TournamentManager {
         this.tournamentSelector = document.getElementById('tournamentSelector');
         this.newTournamentBtn = document.getElementById('newTournamentBtn');
         this.cloneTournamentBtn = document.getElementById('cloneTournamentBtn');
+        this.createByAgeGroupBtn = document.getElementById('createByAgeGroupBtn');
         this.deleteTournamentBtn = document.getElementById('deleteTournamentBtn');
         this.exportTournamentBtn = document.getElementById('exportTournamentBtn');
         this.importTournamentBtn = document.getElementById('importTournamentBtn');
+        this.importRacersBtn = document.getElementById('importRacersBtn');
+        this.downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
         this.importFileInput = document.getElementById('importFileInput');
+        this.importRacersInput = document.getElementById('importRacersInput');
         this.raceDayModeBtn = document.getElementById('raceDayModeBtn');
         this.tournamentManagementSection = document.getElementById('tournamentManagement');
         this.currentTournamentName = document.getElementById('currentTournamentName');
@@ -36,10 +40,14 @@ class TournamentManager {
 
         this.newTournamentBtn?.addEventListener('click', () => this.createNewTournament());
         this.cloneTournamentBtn?.addEventListener('click', () => this.cloneTournament());
+        this.createByAgeGroupBtn?.addEventListener('click', () => this.createTournamentsByAgeGroup());
         this.deleteTournamentBtn?.addEventListener('click', () => this.deleteTournament());
         this.exportTournamentBtn?.addEventListener('click', () => this.exportTournament());
         this.importTournamentBtn?.addEventListener('click', () => this.importFileInput?.click());
+        this.importRacersBtn?.addEventListener('click', () => this.importRacersInput?.click());
+        this.downloadTemplateBtn?.addEventListener('click', () => this.downloadTemplate());
         this.importFileInput?.addEventListener('change', (e) => this.importTournament(e));
+        this.importRacersInput?.addEventListener('change', (e) => this.importRacers(e));
         this.raceDayModeBtn?.addEventListener('click', () => this.toggleRaceDayMode());
     }
 
@@ -165,6 +173,146 @@ class TournamentManager {
                 console.error(error);
             }
         };
+        reader.readAsText(file);
+        
+        // Reset file input
+        event.target.value = '';
+    }
+
+    createTournamentsByAgeGroup() {
+        if (!this.activeTournament || this.activeTournament.racers.length === 0) {
+            alert('Please add some racers first');
+            return;
+        }
+
+        const ageGroups = this.activeTournament.getAgeGroups();
+        
+        if (ageGroups.length === 0) {
+            alert('No age groups found. Please assign age groups to racers first.');
+            return;
+        }
+
+        if (!confirm(`Create ${ageGroups.length} tournaments for age groups: ${ageGroups.join(', ')}?`)) {
+            return;
+        }
+
+        ageGroups.forEach(ageGroup => {
+            const racersInGroup = this.activeTournament.racers.filter(racer => racer.ageGroup === ageGroup);
+            if (racersInGroup.length >= 4) {
+                const tournamentId = `tournament_${Date.now()}_${ageGroup.replace(/\s+/g, '_')}`;
+                const tournamentName = `${ageGroup} Division (${new Date().toLocaleDateString()})`;
+                
+                const tournament = new PinewoodDerbyTournament(tournamentId, tournamentName);
+                tournament.racers = racersInGroup.map(racer => ({
+                    ...racer,
+                    id: Date.now() + Math.random() // Generate new ID to avoid conflicts
+                }));
+                tournament.updateRacersDisplay();
+                
+                this.tournaments.set(tournamentId, tournament);
+            } else {
+                alert(`Skipping ${ageGroup} - needs at least 4 racers (found ${racersInGroup.length})`);
+            }
+        });
+
+        this.saveTournamentsList();
+        this.updateTournamentSelector();
+        alert('Age group tournaments created successfully!');
+    }
+
+    downloadTemplate() {
+        const template = {
+            racers: [
+                { name: "John Doe", ageGroup: "Tigers" },
+                { name: "Jane Smith", ageGroup: "Wolves" },
+                { name: "Mike Johnson", ageGroup: "Bears" },
+                { name: "Sarah Wilson", ageGroup: "Webelos" }
+            ]
+        };
+
+        const csvTemplate = "name,ageGroup\nJohn Doe,Tigers\nJane Smith,Wolves\nMike Johnson,Bears\nSarah Wilson,Webelos";
+
+        // Create a ZIP-like multi-format download
+        const jsonBlob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
+        const csvBlob = new Blob([csvTemplate], { type: 'text/csv' });
+
+        // Download JSON template
+        const jsonUrl = URL.createObjectURL(jsonBlob);
+        const jsonLink = document.createElement('a');
+        jsonLink.href = jsonUrl;
+        jsonLink.download = 'pinewood_derby_racers_template.json';
+        jsonLink.click();
+        URL.revokeObjectURL(jsonUrl);
+
+        // Download CSV template
+        setTimeout(() => {
+            const csvUrl = URL.createObjectURL(csvBlob);
+            const csvLink = document.createElement('a');
+            csvLink.href = csvUrl;
+            csvLink.download = 'pinewood_derby_racers_template.csv';
+            csvLink.click();
+            URL.revokeObjectURL(csvUrl);
+        }, 100);
+    }
+
+    importRacers(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                let racersData;
+                
+                if (file.name.endsWith('.csv')) {
+                    // Parse CSV
+                    const text = e.target.result;
+                    const lines = text.split('\n').filter(line => line.trim());
+                    const headers = lines[0].split(',').map(h => h.trim());
+                    
+                    racersData = lines.slice(1).map(line => {
+                        const values = line.split(',').map(v => v.trim());
+                        const racer = {};
+                        headers.forEach((header, index) => {
+                            racer[header] = values[index] || '';
+                        });
+                        return racer;
+                    });
+                } else {
+                    // Parse JSON
+                    const data = JSON.parse(e.target.result);
+                    racersData = data.racers || data;
+                }
+
+                if (!Array.isArray(racersData) || racersData.length === 0) {
+                    alert('No racer data found in file');
+                    return;
+                }
+
+                // Validate and import racers
+                let importedCount = 0;
+                racersData.forEach(racerData => {
+                    if (racerData.name && racerData.name.trim()) {
+                        this.activeTournament.addRacerWithAgeGroup(racerData.name.trim(), racerData.ageGroup || '');
+                        importedCount++;
+                    }
+                });
+
+                // Store for reload functionality
+                localStorage.setItem('lastRacerImport', JSON.stringify(racersData));
+                
+                alert(`Successfully imported ${importedCount} racers!`);
+                
+                // Enable reload button
+                const reloadBtn = document.getElementById('reloadRacersBtn');
+                if (reloadBtn) reloadBtn.disabled = false;
+                
+            } catch (error) {
+                alert('Error importing racer file. Please check the format.');
+                console.error(error);
+            }
+        };
+        
         reader.readAsText(file);
         
         // Reset file input
@@ -306,11 +454,17 @@ class PinewoodDerbyTournament {
         this.setupPhase = document.getElementById('setupPhase');
         this.tournamentPhase = document.getElementById('tournamentPhase');
         this.racerNameInput = document.getElementById('racerNameInput');
+        this.ageGroupInput = document.getElementById('ageGroupInput');
         this.addRacerBtn = document.getElementById('addRacerBtn');
 
         this.racersList = document.getElementById('racersList');
         this.racersGrid = document.getElementById('racersGrid');
         this.racerCount = document.getElementById('racerCount');
+        this.ageGroupFilter = document.getElementById('ageGroupFilter');
+        this.ageGroupStats = document.getElementById('ageGroupStats');
+        this.bulkAssignBtn = document.getElementById('bulkAssignBtn');
+        this.reloadRacersBtn = document.getElementById('reloadRacersBtn');
+        this.preloadTestDataBtn = document.getElementById('preloadTestDataBtn');
         this.startTournamentBtn = document.getElementById('startTournamentBtn');
         this.clearAllBtn = document.getElementById('clearAllBtn');
 
@@ -336,6 +490,11 @@ class PinewoodDerbyTournament {
             if (e.key === 'Enter') this.addRacer();
         });
 
+        this.ageGroupFilter?.addEventListener('change', () => this.updateRacersDisplay());
+        this.bulkAssignBtn?.addEventListener('click', () => this.showBulkAssignDialog());
+        this.reloadRacersBtn?.addEventListener('click', () => this.reloadLastImport());
+        this.preloadTestDataBtn?.addEventListener('click', () => this.preloadTestData());
+
         this.startTournamentBtn?.addEventListener('click', () => this.startTournament());
         this.clearAllBtn?.addEventListener('click', () => this.clearAllRacers());
 
@@ -360,6 +519,8 @@ class PinewoodDerbyTournament {
 
     addRacer() {
         const name = this.racerNameInput?.value.trim();
+        const ageGroup = this.ageGroupInput?.value || '';
+        
         if (!name) {
             alert('Please enter a racer name');
             return;
@@ -378,12 +539,40 @@ class PinewoodDerbyTournament {
         this.racers.push({
             id: Date.now() + Math.random(),
             name: name,
+            ageGroup: ageGroup,
             eliminated: false
         });
 
         this.racerNameInput.value = '';
+        this.ageGroupInput.value = '';
         this.updateRacersDisplay();
+        this.updateAgeGroupFilter();
         this.racerNameInput.focus();
+        this.saveState();
+    }
+
+    addRacerWithAgeGroup(name, ageGroup) {
+        if (!name) return;
+        
+        if (this.racers.length >= 32) {
+            alert('Maximum 32 racers allowed');
+            return;
+        }
+
+        if (this.racers.some(racer => racer.name.toLowerCase() === name.toLowerCase())) {
+            console.warn('Racer name already exists:', name);
+            return;
+        }
+
+        this.racers.push({
+            id: Date.now() + Math.random(),
+            name: name,
+            ageGroup: ageGroup || '',
+            eliminated: false
+        });
+
+        this.updateRacersDisplay();
+        this.updateAgeGroupFilter();
         this.saveState();
     }
 
@@ -392,10 +581,157 @@ class PinewoodDerbyTournament {
     removeRacer(racerId) {
         this.racers = this.racers.filter(racer => racer.id !== racerId);
         this.updateRacersDisplay();
+        this.updateAgeGroupFilter();
         this.saveState();
     }
 
+    getAgeGroups() {
+        const ageGroups = [...new Set(this.racers
+            .filter(racer => racer.ageGroup && racer.ageGroup.trim())
+            .map(racer => racer.ageGroup))];
+        return ageGroups.sort();
+    }
+
+    updateAgeGroupFilter() {
+        if (!this.ageGroupFilter) return;
+        
+        const currentValue = this.ageGroupFilter.value;
+        const ageGroups = this.getAgeGroups();
+        
+        this.ageGroupFilter.innerHTML = '<option value="">All Age Groups</option>';
+        ageGroups.forEach(group => {
+            const option = document.createElement('option');
+            option.value = group;
+            option.textContent = group;
+            this.ageGroupFilter.appendChild(option);
+        });
+        
+        // Restore previous selection if still valid
+        if (ageGroups.includes(currentValue)) {
+            this.ageGroupFilter.value = currentValue;
+        }
+        
+        this.updateAgeGroupStats();
+    }
+
+    updateAgeGroupStats() {
+        if (!this.ageGroupStats) return;
+        
+        const ageGroups = this.getAgeGroups();
+        if (ageGroups.length === 0) {
+            this.ageGroupStats.style.display = 'none';
+            return;
+        }
+
+        this.ageGroupStats.style.display = 'block';
+        
+        const stats = ageGroups.map(group => {
+            const count = this.racers.filter(racer => racer.ageGroup === group).length;
+            return `${group}: ${count} racer${count !== 1 ? 's' : ''}`;
+        });
+        
+        this.ageGroupStats.innerHTML = `<div class="age-group-stats-content">${stats.join(' | ')}</div>`;
+    }
+
+    showBulkAssignDialog() {
+        const ageGroups = ['Tigers', 'Wolves', 'Bears', 'Webelos', 'Arrow of Light', 'Scouts BSA', 'Adults', 'Open'];
+        const racersWithoutAgeGroup = this.racers.filter(racer => !racer.ageGroup || !racer.ageGroup.trim());
+        
+        if (racersWithoutAgeGroup.length === 0) {
+            alert('All racers already have age groups assigned.');
+            return;
+        }
+
+        const ageGroup = prompt(
+            `Assign age group to ${racersWithoutAgeGroup.length} racers without age groups.\n\nAvailable groups:\n${ageGroups.join(', ')}\n\nEnter age group:`
+        );
+
+        if (ageGroup && ageGroup.trim()) {
+            racersWithoutAgeGroup.forEach(racer => {
+                racer.ageGroup = ageGroup.trim();
+            });
+            this.updateRacersDisplay();
+            this.updateAgeGroupFilter();
+            this.saveState();
+            alert(`Assigned "${ageGroup.trim()}" to ${racersWithoutAgeGroup.length} racers.`);
+        }
+    }
+
+    reloadLastImport() {
+        const lastImport = localStorage.getItem('lastRacerImport');
+        if (!lastImport) {
+            alert('No previous import found.');
+            return;
+        }
+
+        if (!confirm('This will clear all current racers and reload from the last import. Continue?')) {
+            return;
+        }
+
+        try {
+            const racersData = JSON.parse(lastImport);
+            this.racers = [];
+            
+            let importedCount = 0;
+            racersData.forEach(racerData => {
+                if (racerData.name && racerData.name.trim()) {
+                    this.addRacerWithAgeGroup(racerData.name.trim(), racerData.ageGroup || '');
+                    importedCount++;
+                }
+            });
+
+            alert(`Reloaded ${importedCount} racers from last import.`);
+        } catch (error) {
+            alert('Error reloading racers.');
+            console.error(error);
+        }
+    }
+
+    preloadTestData() {
+        if (this.racers.length > 0) {
+            if (!confirm('This will clear all current racers and load test data. Continue?')) {
+                return;
+            }
+        }
+
+        // Clear existing racers
+        this.racers = [];
+
+        // Sample test data for age group testing
+        const testRacers = [
+            { name: "Johnny Smith", ageGroup: "Cubs" },
+            { name: "Sarah Johnson", ageGroup: "Cubs" },
+            { name: "Mike Wilson", ageGroup: "Cubs" },
+            { name: "Emma Davis", ageGroup: "Cubs" },
+            { name: "Alex Brown", ageGroup: "Cubs" },
+            { name: "Katie Miller", ageGroup: "Cubs" },
+            { name: "Ryan Garcia", ageGroup: "Cubs" },
+            { name: "Zoe Martinez", ageGroup: "Cubs" },
+            { name: "Tommy Anderson", ageGroup: "Webelos" },
+            { name: "Jessica Thompson", ageGroup: "Webelos" },
+            { name: "Brandon Lee", ageGroup: "Webelos" },
+            { name: "Mia Rodriguez", ageGroup: "Webelos" },
+            { name: "Tyler Clark", ageGroup: "Webelos" },
+            { name: "Chloe Lewis", ageGroup: "Webelos" },
+            { name: "Jordan Walker", ageGroup: "Webelos" },
+            { name: "Sophia Hall", ageGroup: "Webelos" }
+        ];
+
+        // Add test racers using the existing method
+        testRacers.forEach(racer => {
+            this.addRacerWithAgeGroup(racer.name, racer.ageGroup);
+        });
+
+        alert(`Loaded ${testRacers.length} test racers (8 Cubs + 8 Webelos) for testing age group functionality!`);
+    }
+
     updateRacersDisplay() {
+        // Filter racers based on age group selection
+        const filterValue = this.ageGroupFilter?.value || '';
+        const filteredRacers = filterValue ? 
+            this.racers.filter(racer => racer.ageGroup === filterValue) : 
+            this.racers;
+
         if (this.racerCount) {
             this.racerCount.textContent = this.racers.length;
         }
@@ -405,20 +741,58 @@ class PinewoodDerbyTournament {
         
         if (this.racersGrid) {
             this.racersGrid.innerHTML = '';
-            this.racers.forEach(racer => {
+            filteredRacers.forEach(racer => {
                 const racerCard = document.createElement('div');
                 racerCard.className = 'racer-card';
+                if (racer.ageGroup) {
+                    racerCard.className += ` age-group-${racer.ageGroup.replace(/\s+/g, '-').toLowerCase()}`;
+                }
                 racerCard.innerHTML = `
-                    <span class="racer-name">${racer.name}</span>
+                    <div class="racer-info">
+                        <span class="racer-name">${racer.name}</span>
+                        ${racer.ageGroup ? `<span class="racer-age-group">${racer.ageGroup}</span>` : '<span class="racer-age-group no-age">No Age Group</span>'}
+                    </div>
                     <button class="remove-racer" onclick="tournamentManager.activeTournament.removeRacer(${racer.id})">&times;</button>
                 `;
                 this.racersGrid.appendChild(racerCard);
             });
+
+            // Show filter status if filtering
+            if (filterValue && filteredRacers.length !== this.racers.length) {
+                const filterStatus = document.createElement('div');
+                filterStatus.className = 'filter-status';
+                filterStatus.innerHTML = `Showing ${filteredRacers.length} of ${this.racers.length} racers (${filterValue})`;
+                this.racersGrid.insertBefore(filterStatus, this.racersGrid.firstChild);
+            }
         }
+
+        // Update age group stats
+        this.updateAgeGroupStats();
 
         // Enable/disable start button
         if (this.startTournamentBtn) {
             this.startTournamentBtn.disabled = this.racers.length < 4;
+        }
+
+        // Update tournament management buttons
+        this.updateManagementButtons();
+    }
+
+    updateManagementButtons() {
+        // Enable "Create by Age Group" button if there are multiple age groups with enough racers
+        const ageGroups = this.getAgeGroups();
+        const validAgeGroups = ageGroups.filter(group => {
+            return this.racers.filter(racer => racer.ageGroup === group).length >= 4;
+        });
+
+        const createByAgeGroupBtn = document.getElementById('createByAgeGroupBtn');
+        if (createByAgeGroupBtn) {
+            createByAgeGroupBtn.disabled = validAgeGroups.length === 0;
+        }
+
+        // Enable reload button if there's a last import
+        if (this.reloadRacersBtn) {
+            this.reloadRacersBtn.disabled = !localStorage.getItem('lastRacerImport');
         }
     }
 

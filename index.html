@@ -46,6 +46,9 @@
                     <button id="cloneTournamentBtn" class="btn btn-outline" disabled>
                         <span>📋 Clone Tournament</span>
                     </button>
+                    <button id="createByAgeGroupBtn" class="btn btn-accent" disabled>
+                        <span>🎯 Create Tournaments by Age Group</span>
+                    </button>
                     <button id="deleteTournamentBtn" class="btn btn-danger" disabled>
                         <span>🗑️ Delete Tournament</span>
                     </button>
@@ -55,8 +58,15 @@
                     <button id="importTournamentBtn" class="btn btn-outline">
                         <span>📥 Import Tournament</span>
                     </button>
+                    <button id="importRacersBtn" class="btn btn-outline">
+                        <span>👥 Import Racers</span>
+                    </button>
+                    <button id="downloadTemplateBtn" class="btn btn-outline">
+                        <span>📋 Download Template</span>
+                    </button>
                 </div>
                 <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                <input type="file" id="importRacersInput" accept=".json,.csv" style="display: none;">
             </div>
         </div>
     </section>
@@ -72,13 +82,40 @@
                     <div class="racer-input-section">
                         <div class="input-group">
                             <input type="text" id="racerNameInput" placeholder="Enter racer name" maxlength="25">
+                            <select id="ageGroupInput" class="age-group-select">
+                                <option value="">Select Age Group</option>
+                                <option value="Tigers">Tigers (Kindergarten)</option>
+                                <option value="Wolves">Wolves (1st Grade)</option>
+                                <option value="Bears">Bears (2nd Grade)</option>
+                                <option value="Webelos">Webelos (3rd-4th Grade)</option>
+                                <option value="Arrow of Light">Arrow of Light (5th Grade)</option>
+                                <option value="Scouts BSA">Scouts BSA (6th-12th Grade)</option>
+                                <option value="Adults">Adults</option>
+                                <option value="Open">Open Division</option>
+                            </select>
                             <button id="addRacerBtn" class="btn btn-primary">Add Racer</button>
                         </div>
-
+                        <div class="bulk-actions">
+                            <button id="reloadRacersBtn" class="btn btn-outline" disabled>
+                                <span>🔄 Reload Last Import</span>
+                            </button>
+                            <button id="preloadTestDataBtn" class="btn btn-outline">
+                                <span>🧪 Preload Test Data</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="racers-list" id="racersList">
-                        <h3>Participants (<span id="racerCount">0</span>)</h3>
+                        <div class="racers-list-header">
+                            <h3>Participants (<span id="racerCount">0</span>)</h3>
+                            <div class="age-group-controls">
+                                <select id="ageGroupFilter" class="age-group-filter">
+                                    <option value="">All Age Groups</option>
+                                </select>
+                                <button id="bulkAssignBtn" class="btn btn-sm btn-outline">Bulk Assign</button>
+                            </div>
+                        </div>
+                        <div class="age-group-stats" id="ageGroupStats" style="display: none;"></div>
                         <div class="racers-grid" id="racersGrid"></div>
                     </div>
 
