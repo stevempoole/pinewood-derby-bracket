@@ -84,15 +84,9 @@
                         <div class="input-group">
                             <input type="text" id="racerNameInput" placeholder="Enter racer name" maxlength="25">
                             <select id="ageGroupInput" class="age-group-select">
-                                <option value="">Select Age Group</option>
-                                <option value="Tigers">Tigers (Kindergarten)</option>
-                                <option value="Wolves">Wolves (1st Grade)</option>
-                                <option value="Bears">Bears (2nd Grade)</option>
-                                <option value="Webelos">Webelos (3rd-4th Grade)</option>
-                                <option value="Arrow of Light">Arrow of Light (5th Grade)</option>
-                                <option value="Scouts BSA">Scouts BSA (6th-12th Grade)</option>
-                                <option value="Adults">Adults</option>
-                                <option value="Open">Open Division</option>
+                                <option value="">Select Team</option>
+                                <option value="Guardians">Guardians (3rd-4th Grade)</option>
+                                <option value="Knights">Knights (3rd-4th Grade)</option>
                             </select>
                             <button id="addRacerBtn" class="btn btn-primary">Add Racer</button>
                         </div>
@@ -112,11 +106,13 @@
                     <div class="racers-list" id="racersList">
                         <div class="racers-list-header">
                             <h3>Participants (<span id="racerCount">0</span>)</h3>
-                            <div class="age-group-controls">
+                            <div class="team-controls">
                                 <select id="ageGroupFilter" class="age-group-filter">
-                                    <option value="">All Age Groups</option>
+                                    <option value="">All Teams</option>
+                                    <option value="Guardians">Guardians</option>
+                                    <option value="Knights">Knights</option>
                                 </select>
-                                <button id="bulkAssignBtn" class="btn btn-sm btn-outline">Bulk Assign</button>
+                                <button id="bulkAssignBtn" class="btn btn-sm btn-outline">Bulk Assign Team</button>
                             </div>
                         </div>
                         <div class="age-group-stats" id="ageGroupStats" style="display: none;"></div>

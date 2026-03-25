@@ -8,6 +8,7 @@ class SimpleRaceManager {
         
         // Essential elements only
         this.racerInput = document.getElementById('racerNameInput');
+        this.teamSelect = document.getElementById('ageGroupInput');
         this.addBtn = document.getElementById('addRacerBtn');
         this.quickSetup8Btn = document.getElementById('quickSetup8');
         this.quickSetup16Btn = document.getElementById('quickSetup16');
@@ -17,6 +18,7 @@ class SimpleRaceManager {
         
         console.log('🔍 Elements found:', {
             racerInput: !!this.racerInput,
+            teamSelect: !!this.teamSelect,
             addBtn: !!this.addBtn,
             quickSetup8Btn: !!this.quickSetup8Btn,
             quickSetup16Btn: !!this.quickSetup16Btn,
@@ -70,16 +72,17 @@ class SimpleRaceManager {
         }
         
         const name = this.racerInput.value.trim();
+        const team = this.teamSelect ? this.teamSelect.value : '';
         const carNumber = this.getNextCarNumber();
         
-        console.log('➕ Adding racer:', name, 'Car #' + carNumber);
+        console.log('➕ Adding racer:', name, 'Team:', team || 'None', 'Car #' + carNumber);
         
-        this.addRacerToGrid(name, carNumber);
+        this.addRacerToGrid(name, carNumber, team);
         this.racerInput.value = '';
         this.updateCounts();
     }
     
-    addRacerToGrid(name, carNumber) {
+    addRacerToGrid(name, carNumber, team) {
         if (!this.racersGrid) return;
         
         const racerCard = document.createElement('div');
@@ -88,6 +91,7 @@ class SimpleRaceManager {
             <div class="racer-info">
                 <div class="racer-name">${name}</div>
                 <div class="car-number">Car #${carNumber}</div>
+                ${team ? `<div class="team-badge team-${team.toLowerCase()}">${team}</div>` : ''}
             </div>
             <button class="remove-racer-btn" onclick="this.parentElement.remove(); window.raceManager.updateCounts();">×</button>
         `;
@@ -127,9 +131,10 @@ class SimpleRaceManager {
             this.racersGrid.innerHTML = '';
         }
         
-        // Add racers
+        // Add racers with alternating teams
         for (let i = 0; i < count && i < names.length; i++) {
-            this.addRacerToGrid(names[i], i + 1);
+            const team = i % 2 === 0 ? 'Guardians' : 'Knights';
+            this.addRacerToGrid(names[i], i + 1, team);
         }
         
         this.updateCounts();

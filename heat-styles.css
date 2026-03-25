@@ -530,8 +530,8 @@
     }
 }
 
-/* Age Group Badge (keeping from original) */
-.age-group-badge {
+/* Team Badge */
+.team-badge, .age-group-badge {
     background: var(--primary);
     color: white;
     padding: 0.25rem 0.5rem;
@@ -540,6 +540,15 @@
     font-weight: 500;
     display: inline-block;
     margin-top: 0.25rem;
+}
+
+/* Team-specific colors */
+.team-guardians {
+    background: #2563eb !important; /* Blue for Guardians */
+}
+
+.team-knights {
+    background: #dc2626 !important; /* Red for Knights */
 }
 
 /* Dark Mode Support */
