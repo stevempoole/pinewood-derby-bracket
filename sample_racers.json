@@ -1,0 +1,32 @@
+{
+  "racers": [
+    { "name": "Ethan Thompson", "ageGroup": "Tigers" },
+    { "name": "Mason Rodriguez", "ageGroup": "Tigers" },
+    { "name": "Lucas Chen", "ageGroup": "Tigers" },
+    { "name": "Oliver Johnson", "ageGroup": "Tigers" },
+    { "name": "William Davis", "ageGroup": "Wolves" },
+    { "name": "James Wilson", "ageGroup": "Wolves" },
+    { "name": "Benjamin Brown", "ageGroup": "Wolves" },
+    { "name": "Alexander Miller", "ageGroup": "Wolves" },
+    { "name": "Noah Anderson", "ageGroup": "Wolves" },
+    { "name": "Liam Garcia", "ageGroup": "Bears" },
+    { "name": "Jackson Martinez", "ageGroup": "Bears" },
+    { "name": "Aiden Taylor", "ageGroup": "Bears" },
+    { "name": "Cameron White", "ageGroup": "Bears" },
+    { "name": "Dylan Thomas", "ageGroup": "Bears" },
+    { "name": "Logan Jackson", "ageGroup": "Webelos" },
+    { "name": "Ryan Lee", "ageGroup": "Webelos" },
+    { "name": "Connor Harris", "ageGroup": "Webelos" },
+    { "name": "Austin Clark", "ageGroup": "Webelos" },
+    { "name": "Tyler Lewis", "ageGroup": "Webelos" },
+    { "name": "Blake Walker", "ageGroup": "Arrow of Light" },
+    { "name": "Jordan Hall", "ageGroup": "Arrow of Light" },
+    { "name": "Trevor Young", "ageGroup": "Arrow of Light" },
+    { "name": "Hunter King", "ageGroup": "Arrow of Light" },
+    { "name": "Caleb Wright", "ageGroup": "Arrow of Light" },
+    { "name": "Michael Smith Sr.", "ageGroup": "Adults" },
+    { "name": "David Johnson Sr.", "ageGroup": "Adults" },
+    { "name": "Robert Brown Sr.", "ageGroup": "Adults" },
+    { "name": "Christopher Davis Sr.", "ageGroup": "Adults" }
+  ]
+}

@@ -5,11 +5,26 @@ A complete, production-ready web application for managing pinewood derby tournam
 ## ✨ Features
 
 ### Tournament Management
+- **Multi-Tournament Support**: Create, manage, and switch between multiple tournaments
 - **Dynamic Bracket Generation**: Supports 4-32 participants with automatic bracket sizing
 - **Elimination Format**: Standard single-elimination tournament structure
 - **Bye Handling**: Automatically manages byes for non-power-of-2 participant counts
 - **Winner Selection**: Click-to-select winners with automatic advancement
 - **Real-time Updates**: Instant bracket updates as matches are completed
+
+### 🎯 Age Group Management (New!)
+- **Age Group Assignment**: Assign racers to divisions (Tigers, Wolves, Bears, Webelos, etc.)
+- **Visual Indicators**: Color-coded age group badges for easy identification
+- **Auto-Tournament Creation**: Create separate tournaments for each age division
+- **Filtering & Statistics**: Filter racers by age group and view division statistics
+- **Bulk Operations**: Assign age groups to multiple racers at once
+
+### 📁 Import/Export System (New!)
+- **Bulk Racer Import**: Import racer lists from CSV or JSON files
+- **Template Download**: Get properly formatted templates for easy setup
+- **Reload Functionality**: Restore racers from previous imports
+- **Tournament Export**: Export complete tournament data including age groups
+- **Sample Data**: Includes sample racer files for testing
 
 ### User Experience
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
@@ -19,7 +34,8 @@ A complete, production-ready web application for managing pinewood derby tournam
 - **Professional UI**: Clean, modern design suitable for family events
 
 ### Setup Options
-- **Manual Entry**: Add participants one by one with custom names
+- **Manual Entry**: Add participants one by one with custom names and age groups
+- **Bulk Import**: Upload CSV/JSON files with racer information
 - **Quick Setup**: Generate 8 or 16 placeholder participants instantly
 - **Easy Management**: Remove participants with one click during setup
 - **Validation**: Prevents duplicate names and enforces limits
@@ -92,6 +108,36 @@ Simply download all files and open `index.html` directly in any modern web brows
 - **Reset Tournament**: Start over with same participants
 - **Back to Setup**: Return to participant management
 - **New Tournament**: Clear everything and start fresh
+- **Clone Tournament**: Create a copy with same participants
+- **Export/Import**: Save and restore tournament data
+
+## 🏆 Age Group Tournament Workflow (New Feature!)
+
+Perfect for Cub Scout packs and larger organizations:
+
+### 1. Prepare Racer Data
+- Download template files using "📋 Download Template" button
+- Edit CSV/JSON with racer names and age groups
+- Supported age groups: Tigers, Wolves, Bears, Webelos, Arrow of Light, Scouts BSA, Adults, Open
+
+### 2. Import Racers
+- Click "👥 Import Racers" and select your data file
+- Review imported racers with age group assignments
+- Use "Bulk Assign" for racers missing age groups
+
+### 3. Create Age Divisions
+- Click "🎯 Create Tournaments by Age Group"
+- System automatically creates separate tournaments for each age group (4+ racers required)
+- Switch between tournaments using the tournament selector
+
+### 4. Run Multiple Tournaments
+- Use tournament selector to switch between divisions
+- Each tournament runs independently
+- Export individual tournament results or all tournaments
+
+### Sample Files Included
+- `sample_racers.json` - Example JSON format with 28 racers across age groups
+- `sample_racers.csv` - Example CSV format with same data
 
 ## 🛠️ Technical Details
 

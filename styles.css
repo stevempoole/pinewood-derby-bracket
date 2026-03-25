@@ -208,7 +208,80 @@ body {
     border-color: #667eea;
 }
 
+/* Age Group Select */
+.age-group-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    min-width: 180px;
+    transition: border-color 0.2s;
+}
 
+.age-group-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Bulk Actions */
+.bulk-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Racers List Header */
+.racers-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.age-group-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.age-group-filter {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* Age Group Stats */
+.age-group-stats {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #0369a1;
+}
+
+.age-group-stats-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Filter Status */
+.filter-status {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #92400e;
+}
 
 /* Buttons */
 .btn {
@@ -269,6 +342,11 @@ body {
     cursor: not-allowed;
 }
 
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
 /* Racers List */
 .racers-list h3 {
     margin-bottom: 1rem;
@@ -298,10 +376,42 @@ body {
     transform: translateY(-1px);
 }
 
+.racer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
 .racer-name {
     font-weight: 500;
     color: #2d3748;
 }
+
+.racer-age-group {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: #e2e8f0;
+    color: #4a5568;
+    font-weight: 500;
+    display: inline-block;
+    max-width: fit-content;
+}
+
+.racer-age-group.no-age {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+/* Age Group Specific Colors */
+.age-group-tigers .racer-age-group { background: #fbb6ce; color: #97266d; }
+.age-group-wolves .racer-age-group { background: #c6f6d5; color: #22543d; }
+.age-group-bears .racer-age-group { background: #fbd38d; color: #7b341e; }
+.age-group-webelos .racer-age-group { background: #bee3f8; color: #2a69ac; }
+.age-group-arrow-of-light .racer-age-group { background: #d6f5d6; color: #276749; }
+.age-group-scouts-bsa .racer-age-group { background: #e9d8fd; color: #553c9a; }
+.age-group-adults .racer-age-group { background: #fed7e2; color: #97266d; }
+.age-group-open .racer-age-group { background: #fbb6ce; color: #97266d; }
 
 .remove-racer {
     background: #fed7d7;
@@ -720,6 +830,35 @@ body {
     .btn {
         font-size: 0.9rem;
         padding: 0.6rem 1.2rem;
+    }
+
+    .racers-list-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .age-group-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .age-group-stats-content {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .racer-info {
+        min-width: 0;
+    }
+
+    .racer-age-group {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .bulk-actions {
+        justify-content: center;
     }
 }
 

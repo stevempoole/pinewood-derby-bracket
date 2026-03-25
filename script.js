@@ -1096,6 +1096,7 @@ class PinewoodDerbyTournament {
 
     show() {
         this.updateRacersDisplay();
+        this.updateAgeGroupFilter();
         if (this.tournamentStarted) {
             this.showTournamentPhase();
             this.updateBracketDisplay();
@@ -1141,6 +1142,13 @@ class PinewoodDerbyTournament {
                 this.maxRounds = savedState.maxRounds || 0;
             }
         }
+
+        // Migration: Ensure all racers have ageGroup property
+        this.racers.forEach(racer => {
+            if (!racer.hasOwnProperty('ageGroup')) {
+                racer.ageGroup = '';
+            }
+        });
     }
 
     saveState() {
