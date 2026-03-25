@@ -677,7 +677,7 @@ class HeatRacingManager {
         }
         
         // Show dialog to select team for bulk assignment
-        const team = prompt('Assign which team to ALL visible racers?\n\nEnter:\n• "Guardians" for Guardians team\n• "Knights" for Knights team\n• "Clear" to remove all team assignments');
+        const team = prompt('Assign which team to ALL racers?\n\nEnter:\n• "Guardians" for Guardians team\n• "Knights" for Knights team\n• "Clear" to remove all team assignments');
         
         if (!team) {
             console.log('❌ Bulk assign cancelled');
@@ -688,42 +688,46 @@ class HeatRacingManager {
         let count = 0;
         
         racerCards.forEach(card => {
-            // Only assign to visible cards (respects current filter)
-            if (card.style.display !== 'none') {
-                const racerInfo = card.querySelector('.racer-info');
-                const existingBadge = card.querySelector('.team-badge');
-                
-                // Remove existing team badge
-                if (existingBadge) {
-                    existingBadge.remove();
-                }
-                
-                // Add new team badge if not clearing
-                if (teamNormalized.toLowerCase() !== 'clear') {
-                    if (teamNormalized === 'Guardians' || teamNormalized === 'Knights') {
-                        const teamBadge = document.createElement('div');
-                        teamBadge.className = `team-badge team-${teamNormalized.toLowerCase()}`;
-                        teamBadge.textContent = teamNormalized;
-                        racerInfo.appendChild(teamBadge);
-                        count++;
-                    } else {
-                        alert('Invalid team name! Use "Guardians" or "Knights"');
-                        return;
-                    }
-                } else {
+            // Apply to ALL racers regardless of filter state
+            const racerInfo = card.querySelector('.racer-info');
+            const existingBadge = card.querySelector('.team-badge');
+            
+            // Remove existing team badge
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            // Add new team badge if not clearing
+            if (teamNormalized.toLowerCase() !== 'clear') {
+                if (teamNormalized === 'Guardians' || teamNormalized === 'Knights') {
+                    const teamBadge = document.createElement('div');
+                    teamBadge.className = `team-badge team-${teamNormalized.toLowerCase()}`;
+                    teamBadge.textContent = teamNormalized;
+                    racerInfo.appendChild(teamBadge);
                     count++;
+                } else {
+                    alert('Invalid team name! Use "Guardians" or "Knights"');
+                    return;
                 }
+            } else {
+                count++;
             }
         });
+        
+        // Reset filter to show all racers after bulk assignment
+        if (this.ageGroupFilter) {
+            this.ageGroupFilter.value = '';
+        }
+        this.filterByAgeGroup(); // Apply the "show all" filter
         
         this.autoSave();
         
         if (teamNormalized.toLowerCase() === 'clear') {
             console.log(`✅ Cleared teams from ${count} racers`);
-            alert(`Cleared teams from ${count} racers`);
+            alert(`Cleared teams from ${count} racers. Filter reset to show all racers.`);
         } else {
             console.log(`✅ Assigned ${teamNormalized} team to ${count} racers`);
-            alert(`Assigned ${teamNormalized} team to ${count} racers`);
+            alert(`Assigned ${teamNormalized} team to ${count} racers. Filter reset to show all racers.`);
         }
     }
 }
