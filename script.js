@@ -18,7 +18,7 @@ class HeatRacingManager {
         // Setup phase elements
         this.setupPhase = document.getElementById('setupPhase');
         this.heatRacingPhase = document.getElementById('heatRacingPhase');
-        this.participantInput = document.getElementById('participantInput');
+        this.participantInput = document.getElementById('racerNameInput');
         this.addRacerBtn = document.getElementById('addRacerBtn');
         this.startTournamentBtn = document.getElementById('startTournamentBtn');
         this.clearAllBtn = document.getElementById('clearAllBtn');
