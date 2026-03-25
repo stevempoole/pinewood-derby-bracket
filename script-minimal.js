@@ -15,6 +15,7 @@ class SimpleRaceManager {
         this.racersGrid = document.getElementById('racersGrid');
         this.racerCount = document.getElementById('racerCount');
         this.startBtn = document.getElementById('startTournamentBtn');
+        this.clearAllBtn = document.getElementById('clearAllBtn');
         
         // UI sections
         this.tournamentManagement = document.getElementById('tournamentManagement');
@@ -29,6 +30,7 @@ class SimpleRaceManager {
         this.importTournamentBtn = document.getElementById('importTournamentBtn');
         this.importRacersBtn = document.getElementById('importRacersBtn');
         this.downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+        this.saveTournamentBtn = document.getElementById('saveTournamentBtn'); // If it exists
         this.importFileInput = document.getElementById('importFileInput');
         this.importRacersInput = document.getElementById('importRacersInput');
         
@@ -41,6 +43,7 @@ class SimpleRaceManager {
             racersGrid: !!this.racersGrid,
             racerCount: !!this.racerCount,
             startBtn: !!this.startBtn,
+            clearAllBtn: !!this.clearAllBtn,
             tournamentManagement: !!this.tournamentManagement,
             raceDayModeBtn: !!this.raceDayModeBtn,
             newTournamentBtn: !!this.newTournamentBtn,
@@ -49,7 +52,11 @@ class SimpleRaceManager {
         });
         
         this.bindBasicEvents();
-        this.updateCounts();
+        
+        // Load any saved setup
+        if (!this.loadSavedSetup()) {
+            this.updateCounts();
+        }
         
         console.log('✅ SimpleRaceManager ready!');
     }
@@ -73,6 +80,20 @@ class SimpleRaceManager {
             this.quickSetup16Btn.addEventListener('click', () => {
                 console.log('🎯 Quick Setup 16 clicked');
                 this.quickSetup(16);
+            });
+        }
+        
+        if (this.clearAllBtn) {
+            this.clearAllBtn.addEventListener('click', () => {
+                console.log('🎯 Clear All clicked');
+                this.clearAll();
+            });
+        }
+        
+        if (this.startBtn) {
+            this.startBtn.addEventListener('click', () => {
+                console.log('🎯 Start Heat Racing clicked');
+                this.startHeatRacing();
             });
         }
         
@@ -174,6 +195,7 @@ class SimpleRaceManager {
         this.addRacerToGrid(name, carNumber, team);
         this.racerInput.value = '';
         this.updateCounts();
+        this.autoSave();
     }
     
     addRacerToGrid(name, carNumber, team) {
@@ -232,6 +254,7 @@ class SimpleRaceManager {
         }
         
         this.updateCounts();
+        this.autoSave();
         console.log('✅ Quick setup complete');
     }
     
@@ -249,6 +272,141 @@ class SimpleRaceManager {
         }
         
         console.log('📊 Updated counts:', count, 'racers');
+    }
+    
+    clearAll() {
+        if (confirm('Clear all racers? This cannot be undone.')) {
+            console.log('🗑️ Clearing all racers...');
+            if (this.racersGrid) {
+                this.racersGrid.innerHTML = '';
+            }
+            this.updateCounts();
+            this.autoSave();
+            console.log('✅ All racers cleared');
+        }
+    }
+    
+    startHeatRacing() {
+        const racers = this.getCurrentRacers();
+        console.log('🏁 Starting heat racing with', racers.length, 'racers');
+        
+        if (racers.length < 4) {
+            alert(`Need at least 4 racers to start heat racing! Currently have ${racers.length}.`);
+            console.log('❌ Not enough racers to start');
+            return;
+        }
+        
+        if (racers.length > 25) {
+            alert(`Too many racers! Maximum is 25, currently have ${racers.length}.`);
+            console.log('❌ Too many racers to start');
+            return;
+        }
+        
+        console.log('✅ Racers validated, initializing heat racing system...');
+        
+        // Initialize the heat racing system
+        window.heatRacing.setupRace(racers);
+        
+        // Save state before switching
+        this.autoSave();
+        
+        // Switch to racing phase
+        this.switchToHeatRacing();
+        
+        alert(`Heat racing started with ${racers.length} racers! Each racer will race exactly 3 times.`);
+        console.log('✅ Heat racing started successfully');
+    }
+    
+    switchToHeatRacing() {
+        console.log('🔄 Switching to heat racing interface...');
+        
+        const setupPhase = document.getElementById('setupPhase');
+        const heatRacingPhase = document.getElementById('heatRacingPhase');
+        
+        if (setupPhase && heatRacingPhase) {
+            setupPhase.style.display = 'none';
+            heatRacingPhase.style.display = 'block';
+            console.log('✅ Switched to heat racing interface');
+        } else {
+            console.log('⚠️ Heat racing interface not found - using full script needed');
+            alert('Heat racing interface loading... (Need full script for complete functionality)');
+        }
+    }
+    
+    autoSave() {
+        const racers = this.getCurrentRacers();
+        const saveData = {
+            racers: racers,
+            timestamp: Date.now(),
+            teams: ['Guardians', 'Knights']
+        };
+        
+        try {
+            localStorage.setItem('pinewood_derby_setup', JSON.stringify(saveData));
+            console.log('💾 Auto-saved:', racers.length, 'racers');
+            
+            // Show save indicator briefly
+            this.showSaveIndicator();
+        } catch (error) {
+            console.error('❌ Auto-save failed:', error);
+        }
+    }
+    
+    showSaveIndicator() {
+        // Create or update save indicator
+        let indicator = document.getElementById('save-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'save-indicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 14px;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.3s;
+            `;
+            document.body.appendChild(indicator);
+        }
+        
+        indicator.textContent = '💾 Saved';
+        indicator.style.opacity = '1';
+        
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+        }, 1500);
+    }
+    
+    loadSavedSetup() {
+        try {
+            const saved = localStorage.getItem('pinewood_derby_setup');
+            if (saved) {
+                const saveData = JSON.parse(saved);
+                console.log('📂 Loading saved setup...', saveData.racers.length, 'racers');
+                
+                // Clear existing racers
+                if (this.racersGrid) {
+                    this.racersGrid.innerHTML = '';
+                }
+                
+                // Load saved racers
+                saveData.racers.forEach(racer => {
+                    this.addRacerToGrid(racer.name, racer.carNumber || this.getNextCarNumber(), racer.team || '');
+                });
+                
+                this.updateCounts();
+                console.log('✅ Saved setup loaded successfully');
+                return true;
+            }
+        } catch (error) {
+            console.error('❌ Error loading saved setup:', error);
+        }
+        return false;
     }
     
     // Race Day Mode
