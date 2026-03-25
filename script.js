@@ -359,11 +359,8 @@ class HeatRacingManager {
         if (success) {
             this.clearCurrentResults();
             
-            // Auto-advance to next heat if not complete
-            if (!window.heatRacing.raceCompleted) {
-                setTimeout(() => this.nextHeat(), 1000);
-            }
-            
+            // The heat system automatically advances to the next heat
+            // No need to manually advance here
             this.updateRaceDisplay();
         }
     }
@@ -373,16 +370,21 @@ class HeatRacingManager {
         
         if (!this.standingsList) return;
         
-        this.standingsList.innerHTML = standings.map((racer, index) => `
+        this.standingsList.innerHTML = standings.map((racer, index) => {
+            // Get team from racer's ageGroup property
+            const team = racer.ageGroup || '';
+            const teamBadge = team ? `<span class="team-badge-small team-${team.toLowerCase()}">${team}</span>` : '';
+            
+            return `
             <div class="standing-item ${index < 3 ? 'podium' : ''}">
                 <div class="position">${index + 1}</div>
                 <div class="racer-details">
-                    <div class="name">${racer.name}</div>
+                    <div class="name">${racer.name} ${teamBadge}</div>
                     <div class="car-info">Car #${racer.carNumber} • ${racer.totalPoints} pts</div>
                 </div>
                 <div class="races-count">${racer.races.length}/3</div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
     }
 
     updateHeatGrid() {
