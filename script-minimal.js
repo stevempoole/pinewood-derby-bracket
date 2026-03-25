@@ -16,7 +16,11 @@ class SimpleRaceManager {
         this.racerCount = document.getElementById('racerCount');
         this.startBtn = document.getElementById('startTournamentBtn');
         
+        // UI sections
+        this.tournamentManagement = document.getElementById('tournamentManagement');
+        
         // Tournament management buttons
+        this.raceDayModeBtn = document.getElementById('raceDayModeBtn');
         this.newTournamentBtn = document.getElementById('newTournamentBtn');
         this.cloneTournamentBtn = document.getElementById('cloneTournamentBtn');
         this.createByAgeGroupBtn = document.getElementById('createByAgeGroupBtn');
@@ -37,6 +41,8 @@ class SimpleRaceManager {
             racersGrid: !!this.racersGrid,
             racerCount: !!this.racerCount,
             startBtn: !!this.startBtn,
+            tournamentManagement: !!this.tournamentManagement,
+            raceDayModeBtn: !!this.raceDayModeBtn,
             newTournamentBtn: !!this.newTournamentBtn,
             exportTournamentBtn: !!this.exportTournamentBtn,
             importRacersBtn: !!this.importRacersBtn
@@ -76,6 +82,14 @@ class SimpleRaceManager {
                     console.log('🎯 Enter key pressed');
                     this.addRacer();
                 }
+            });
+        }
+        
+        // Race Day Mode button
+        if (this.raceDayModeBtn) {
+            this.raceDayModeBtn.addEventListener('click', () => {
+                console.log('🎯 Race Day Mode clicked');
+                this.toggleRaceDayMode();
             });
         }
         
@@ -237,6 +251,34 @@ class SimpleRaceManager {
         console.log('📊 Updated counts:', count, 'racers');
     }
     
+    // Race Day Mode
+    toggleRaceDayMode() {
+        console.log('🏁 Toggling Race Day Mode...');
+        
+        if (!this.tournamentManagement || !this.raceDayModeBtn) {
+            console.error('❌ Missing elements for Race Day Mode');
+            return;
+        }
+        
+        const isRaceDayMode = this.tournamentManagement.style.display === 'none';
+        
+        if (isRaceDayMode) {
+            // Exit Race Day Mode - Show setup
+            this.tournamentManagement.style.display = 'block';
+            this.raceDayModeBtn.innerHTML = '🏁 Race Day Mode';
+            this.raceDayModeBtn.classList.remove('btn-danger');
+            this.raceDayModeBtn.classList.add('btn-accent');
+            console.log('✅ Exited Race Day Mode - Setup visible');
+        } else {
+            // Enter Race Day Mode - Hide setup
+            this.tournamentManagement.style.display = 'none';
+            this.raceDayModeBtn.innerHTML = '⚙️ Setup Mode';
+            this.raceDayModeBtn.classList.remove('btn-accent');
+            this.raceDayModeBtn.classList.add('btn-danger');
+            console.log('✅ Entered Race Day Mode - Setup hidden');
+        }
+    }
+
     // Tournament Management Methods
     newTournament() {
         if (confirm('Start a new tournament? All current racers will be cleared.')) {
