@@ -5,13 +5,19 @@
 
 class HeatRacingManager {
     constructor() {
+        console.log('🔧 HeatRacingManager constructor started');
         this.raceSetup = true;  // Start in setup mode
         this.currentResults = { first: null, second: null, third: null };
         
+        console.log('🔧 Initializing elements...');
         this.initializeElements();
+        console.log('🔧 Binding events...');
         this.bindEvents();
+        console.log('🔧 Loading saved data...');
         this.loadSavedData();
+        console.log('🔧 Updating display...');
         this.updateDisplay();
+        console.log('✅ HeatRacingManager constructor completed');
     }
 
     initializeElements() {
@@ -60,7 +66,7 @@ class HeatRacingManager {
         this.exportResultsBtn = document.getElementById('exportResultsBtn');
         
         // Age group elements (keeping from original)
-        this.ageGroupSelect = document.getElementById('ageGroupSelect');
+        this.ageGroupSelect = document.getElementById('ageGroupInput');
         this.ageGroupFilter = document.getElementById('ageGroupFilter');
         this.ageGroupStats = document.getElementById('ageGroupStats');
         this.bulkAssignBtn = document.getElementById('bulkAssignBtn');
@@ -536,7 +542,13 @@ class HeatRacingManager {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.raceManager = new HeatRacingManager();
+    console.log('🍌 DOM Content Loaded, initializing HeatRacingManager...');
+    try {
+        window.raceManager = new HeatRacingManager();
+        console.log('✅ HeatRacingManager initialized successfully');
+    } catch (error) {
+        console.error('❌ Error initializing HeatRacingManager:', error);
+    }
 });
 
 // Global helper functions for HTML onclick events
