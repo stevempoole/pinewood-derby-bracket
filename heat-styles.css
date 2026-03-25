@@ -3,9 +3,11 @@
  * Additional styles for the heat-based racing interface
  */
 
-/* Heat Racing Phase */
+/* Heat Racing Phase - Improved contrast */
 .heat-racing-phase {
     padding: 2rem 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+    min-height: 100vh;
 }
 
 /* Race Controls */
@@ -111,29 +113,37 @@
 }
 
 .lane {
-    background: var(--bg);
-    border: 2px solid var(--border);
+    background: white;
+    border: 3px solid #e2e8f0;
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .lane.lane-unused {
-    opacity: 0.5;
+    opacity: 0.4;
     background: repeating-linear-gradient(
         45deg,
-        var(--surface),
-        var(--surface) 10px,
-        transparent 10px,
-        transparent 20px
+        #f7fafc,
+        #f7fafc 10px,
+        #edf2f7 10px,
+        #edf2f7 20px
     );
+    border-style: dashed;
 }
 
 .lane:not(.lane-unused):hover {
-    border-color: var(--primary);
+    border-color: #667eea;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
+
+/* Lane-specific colors */
+.lane-1 { border-color: #4299e1; }
+.lane-2 { border-color: #48bb78; }  
+.lane-4 { border-color: #ed8936; }
 
 .lane-header {
     font-weight: 600;
@@ -154,14 +164,18 @@
 .car-number {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary);
+    color: #1a202c;
     margin-bottom: 0.5rem;
+    background: #f7fafc;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
 }
 
 .racer-name {
     font-size: 1rem;
-    color: var(--text);
-    font-weight: 500;
+    color: #2d3748;
+    font-weight: 600;
 }
 
 /* Results Entry */
@@ -203,27 +217,51 @@
 
 .finish-btn {
     padding: 0.75rem 1rem;
-    border: 2px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
+    border: 3px solid #e2e8f0;
+    background: white;
+    color: #1a202c;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .finish-btn:hover {
-    border-color: var(--primary);
-    background: var(--primary);
+    border-color: #667eea;
+    background: #667eea;
     color: white;
     transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
 .finish-btn.selected {
-    background: var(--primary);
+    background: #48bb78;
     color: white;
-    border-color: var(--primary);
-    box-shadow: 0 0 12px var(--primary-alpha);
+    border-color: #48bb78;
+    box-shadow: 0 0 16px rgba(72, 187, 120, 0.4);
+    transform: scale(1.1);
+}
+
+/* First place buttons - gold accent */
+.finish-position:first-child .finish-btn.selected {
+    background: #f6ad55;
+    border-color: #f6ad55;
+    box-shadow: 0 0 16px rgba(246, 173, 85, 0.4);
+}
+
+/* Second place buttons - silver accent */  
+.finish-position:nth-child(2) .finish-btn.selected {
+    background: #a0aec0;
+    border-color: #a0aec0;
+    box-shadow: 0 0 16px rgba(160, 174, 192, 0.4);
+}
+
+/* Third place buttons - bronze accent */
+.finish-position:nth-child(3) .finish-btn.selected {
+    background: #d69e2e;
+    border-color: #d69e2e;
+    box-shadow: 0 0 16px rgba(214, 158, 46, 0.4);
 }
 
 .results-actions {
@@ -542,13 +580,30 @@
     margin-top: 0.25rem;
 }
 
-/* Team-specific colors */
+/* Team-specific colors - High contrast */
 .team-guardians {
-    background: #2563eb !important; /* Blue for Guardians */
+    background: #1d4ed8 !important; /* Darker blue for Guardians */
+    color: white !important;
+    border: 2px solid #3b82f6 !important;
+    font-weight: 600 !important;
 }
 
 .team-knights {
-    background: #dc2626 !important; /* Red for Knights */
+    background: #dc2626 !important; /* Bright red for Knights */
+    color: white !important;
+    border: 2px solid #f87171 !important;
+    font-weight: 600 !important;
+}
+
+/* Enhanced contrast for team cards */
+.racer-card:has(.team-guardians) {
+    border-left: 4px solid #1d4ed8;
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.1), transparent);
+}
+
+.racer-card:has(.team-knights) {
+    border-left: 4px solid #dc2626;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), transparent);
 }
 
 /* Dark Mode Support */

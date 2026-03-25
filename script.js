@@ -129,6 +129,7 @@ class HeatRacingManager {
         input.value = '';
         this.updateCounts();
         this.updateStartButton();
+        this.autoSave();
     }
 
     addRacerToGrid(racer) {
@@ -140,9 +141,9 @@ class HeatRacingManager {
             <div class="racer-info">
                 <div class="racer-name">${racer.name}</div>
                 <div class="car-number">Car #${racer.carNumber}</div>
-                ${racer.ageGroup ? `<div class="age-group-badge">${racer.ageGroup}</div>` : ''}
+                ${racer.ageGroup ? `<div class="team-badge team-${racer.ageGroup.toLowerCase()}">${racer.ageGroup}</div>` : ''}
             </div>
-            <button class="remove-racer-btn" onclick="this.parentElement.remove(); raceManager.updateCounts(); raceManager.updateStartButton();">×</button>
+            <button class="remove-racer-btn" onclick="this.parentElement.remove(); raceManager.updateCounts(); raceManager.updateStartButton(); raceManager.autoSave();">×</button>
         `;
         
         this.racersGrid.appendChild(racerCard);
@@ -169,7 +170,7 @@ class HeatRacingManager {
         return Array.from(racerCards).map(card => ({
             name: card.querySelector('.racer-name')?.textContent || '',
             carNumber: parseInt(card.querySelector('.car-number')?.textContent?.match(/\d+/)?.[0] || '1'),
-            ageGroup: card.querySelector('.age-group-badge')?.textContent || ''
+            ageGroup: card.querySelector('.team-badge')?.textContent || ''
         }));
     }
 
@@ -193,6 +194,7 @@ class HeatRacingManager {
             if (this.racersGrid) this.racersGrid.innerHTML = '';
             this.updateCounts();
             this.updateStartButton();
+            this.autoSave();
         }
     }
 
@@ -492,33 +494,30 @@ class HeatRacingManager {
             this.addRacerToGrid({
                 name: names[i],
                 carNumber: i + 1,
-                ageGroup: ''
+                ageGroup: i % 2 === 0 ? 'Guardians' : 'Knights'
             });
         }
         
         this.updateCounts();
         this.updateStartButton();
+        this.autoSave();
     }
 
     loadSavedData() {
-        // Try to load saved race state
+        // Load saved tournament setup
+        if (this.loadSavedSetup()) {
+            console.log('✅ Loaded saved tournament setup');
+        } else {
+            console.log('💡 No saved setup found, starting fresh');
+        }
+        
+        // Also try to load heat racing state if available
         if (window.heatRacing.loadState()) {
-            // If we have saved data, check if we should restore the race interface
-            if (window.heatRacing.racers.length > 0) {
-                // Populate the setup phase with racers
-                window.heatRacing.racers.forEach(racer => {
-                    this.addRacerToGrid(racer);
-                });
-                this.updateCounts();
-                this.updateStartButton();
-                
-                // If race was in progress, offer to continue
-                if (window.heatRacing.heats.length > 0) {
-                    const progress = window.heatRacing.getRaceProgress();
-                    if (progress.completedHeats > 0) {
-                        if (confirm('Continue previous race?')) {
-                            this.startRace();
-                        }
+            if (window.heatRacing.heats.length > 0) {
+                const progress = window.heatRacing.getRaceProgress();
+                if (progress.completedHeats > 0) {
+                    if (confirm('Continue previous race?')) {
+                        this.startRace();
                     }
                 }
             }
@@ -528,6 +527,98 @@ class HeatRacingManager {
     updateDisplay() {
         this.updateCounts();
         this.updateStartButton();
+    }
+    
+    // Auto-save functionality
+    autoSave() {
+        const racers = this.getCurrentRacers();
+        const saveData = {
+            racers: racers,
+            timestamp: Date.now(),
+            teams: ['Guardians', 'Knights']
+        };
+        
+        try {
+            localStorage.setItem('pinewood_derby_setup', JSON.stringify(saveData));
+            console.log('💾 Auto-saved:', racers.length, 'racers');
+            this.showSaveIndicator();
+        } catch (error) {
+            console.error('❌ Auto-save failed:', error);
+        }
+    }
+    
+    showSaveIndicator() {
+        let indicator = document.getElementById('save-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'save-indicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #48bb78;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.3s;
+                box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+            `;
+            document.body.appendChild(indicator);
+        }
+        
+        indicator.textContent = '💾 Saved';
+        indicator.style.opacity = '1';
+        
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+        }, 1500);
+    }
+    
+    getCurrentRacers() {
+        const racerCards = this.racersGrid?.querySelectorAll('.racer-card') || [];
+        return Array.from(racerCards).map(card => ({
+            name: card.querySelector('.racer-name')?.textContent || '',
+            carNumber: parseInt(card.querySelector('.car-number')?.textContent?.match(/\d+/)?.[0] || '1'),
+            ageGroup: card.querySelector('.team-badge')?.textContent || ''
+        }));
+    }
+    
+    loadSavedSetup() {
+        try {
+            const saved = localStorage.getItem('pinewood_derby_setup');
+            if (saved) {
+                const saveData = JSON.parse(saved);
+                console.log('📂 Loading saved setup...', saveData.racers?.length || 0, 'racers');
+                
+                if (saveData.racers && Array.isArray(saveData.racers) && saveData.racers.length > 0) {
+                    // Clear existing racers
+                    if (this.racersGrid) {
+                        this.racersGrid.innerHTML = '';
+                    }
+                    
+                    // Load saved racers
+                    saveData.racers.forEach(racer => {
+                        this.addRacerToGrid({
+                            name: racer.name,
+                            carNumber: racer.carNumber,
+                            ageGroup: racer.ageGroup || ''
+                        });
+                    });
+                    
+                    this.updateCounts();
+                    this.updateStartButton();
+                    console.log('✅ Saved setup loaded successfully');
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error loading saved setup:', error);
+        }
+        return false;
     }
     
     // Age group functionality (keeping from original)
