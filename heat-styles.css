@@ -1,0 +1,551 @@
+/**
+ * 🏁 Heat Racing System CSS
+ * Additional styles for the heat-based racing interface
+ */
+
+/* Heat Racing Phase */
+.heat-racing-phase {
+    padding: 2rem 0;
+}
+
+/* Race Controls */
+.race-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.race-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    max-width: 400px;
+    margin: 0 2rem;
+}
+
+.progress-text {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-percent {
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 40px;
+    text-align: right;
+}
+
+/* Current Heat Section */
+.current-heat-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.current-heat-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.heat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.heat-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.5rem;
+}
+
+.heat-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.heat-dropdown {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Heat Lanes */
+.heat-lanes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.lane {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.lane.lane-unused {
+    opacity: 0.5;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--surface),
+        var(--surface) 10px,
+        transparent 10px,
+        transparent 20px
+    );
+}
+
+.lane:not(.lane-unused):hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.lane-header {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.lane-racer {
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.car-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.racer-name {
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Results Entry */
+.results-entry {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.results-entry h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text);
+    text-align: center;
+}
+
+.finish-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.finish-position {
+    text-align: center;
+}
+
+.finish-position label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.lane-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.finish-btn {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.finish-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.finish-btn.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 12px var(--primary-alpha);
+}
+
+.results-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Standings Card */
+.standings-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    height: fit-content;
+}
+
+.standings-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text);
+    text-align: center;
+}
+
+.standings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.standing-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.standing-item.podium {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--surface) 100%);
+    border-color: var(--primary);
+}
+
+.standing-item .position {
+    width: 2rem;
+    height: 2rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.standing-item.podium .position {
+    background: var(--accent);
+}
+
+.racer-details {
+    flex: 1;
+}
+
+.racer-details .name {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.racer-details .car-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.races-count {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Heat Schedule Section */
+.heat-schedule-section {
+    margin-top: 3rem;
+}
+
+.heat-schedule-section h3 {
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.heat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.heat-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.heat-item.current {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 16px var(--primary-alpha);
+}
+
+.heat-item.completed {
+    opacity: 0.7;
+    background: var(--surface);
+}
+
+.heat-number {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.heat-lanes .lane-assignment {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.completed-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--success);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Race Completion */
+.race-completion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.completion-card {
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 3rem;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    border: 2px solid var(--primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.completion-card h2 {
+    margin: 0 0 2rem 0;
+    color: var(--text);
+    font-size: 2rem;
+}
+
+/* Podium */
+.podium {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    height: 200px;
+}
+
+.podium-place {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+    border-radius: 12px 12px 0 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    border: 2px solid var(--border);
+    min-width: 120px;
+}
+
+.podium-first {
+    height: 100%;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-color: #FFD700;
+}
+
+.podium-second {
+    height: 80%;
+    background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+    border-color: #C0C0C0;
+}
+
+.podium-third {
+    height: 60%;
+    background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+    border-color: #CD7F32;
+}
+
+.place-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.racer-info .name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.racer-info .points {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.celebration-confetti {
+    font-size: 2rem;
+    margin: 2rem 0;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .current-heat-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .heat-lanes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .lane.lane-unused {
+        display: none;
+    }
+    
+    .race-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .race-progress {
+        margin: 0;
+        max-width: none;
+    }
+    
+    .heat-navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .finish-buttons {
+        gap: 1.5rem;
+    }
+    
+    .lane-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .podium {
+        flex-direction: column;
+        height: auto;
+        gap: 1rem;
+    }
+    
+    .podium-place {
+        width: 100%;
+        max-width: 300px;
+        height: 120px !important;
+        flex-direction: row;
+        justify-content: space-between;
+        border-radius: 12px;
+    }
+    
+    .completion-card {
+        padding: 2rem 1rem;
+    }
+}
+
+/* Age Group Badge (keeping from original) */
+.age-group-badge {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 0.25rem;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-light: rgba(102, 126, 234, 0.15);
+        --primary-alpha: rgba(102, 126, 234, 0.3);
+    }
+}

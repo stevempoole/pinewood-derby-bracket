@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinewood Derby Tournament Bracket</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <h1 class="title">🏁 Pinewood Derby Tournament Bracket</h1>
+                <div class="tournament-selector-section">
+                    <select id="tournamentSelector" class="tournament-selector">
+                        <option value="">Select Tournament...</option>
+                    </select>
+                    <button id="raceDayModeBtn" class="btn btn-accent">🏁 Race Day Mode</button>
+                </div>
+            </div>
+            <div class="tournament-info">
+                <div class="tournament-details">
+                    <span class="current-tournament">
+                        <strong id="currentTournamentName">Tournament Name</strong>
+                        <span id="tournamentStatus" class="tournament-status">Setup</span>
+                    </span>
+                    <span class="date" id="tournamentDate"></span>
+                    <span class="participants" id="participantCount">0 racers</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tournament Management Section -->
+    <section id="tournamentManagement" class="tournament-management">
+        <div class="container">
+            <div class="management-card">
+                <h2>Tournament Management</h2>
+                <div class="management-actions">
+                    <button id="newTournamentBtn" class="btn btn-primary">
+                        <span>➕ New Tournament</span>
+                    </button>
+                    <button id="cloneTournamentBtn" class="btn btn-outline" disabled>
+                        <span>📋 Clone Tournament</span>
+                    </button>
+                    <button id="createByAgeGroupBtn" class="btn btn-accent" disabled>
+                        <span>🎯 Create Tournaments by Age Group</span>
+                    </button>
+                    <button id="deleteTournamentBtn" class="btn btn-danger" disabled>
+                        <span>🗑️ Delete Tournament</span>
+                    </button>
+                    <button id="exportTournamentBtn" class="btn btn-outline" disabled>
+                        <span>📤 Export Tournament</span>
+                    </button>
+                    <button id="importTournamentBtn" class="btn btn-outline">
+                        <span>📥 Import Tournament</span>
+                    </button>
+                    <button id="importRacersBtn" class="btn btn-outline">
+                        <span>👥 Import Racers</span>
+                    </button>
+                    <button id="downloadTemplateBtn" class="btn btn-outline">
+                        <span>📋 Download Template</span>
+                    </button>
+                </div>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                <input type="file" id="importRacersInput" accept=".json,.csv" style="display: none;">
+            </div>
+        </div>
+    </section>
+
+    <main class="main">
+        <div class="container">
+            <!-- Setup Phase -->
+            <div class="setup-phase" id="setupPhase">
+                <div class="setup-card">
+                    <h2>🚗 Tournament Setup</h2>
+                    <p>Enter the names of all racers participating in the tournament. You can add between 4-32 participants.</p>
+                    
+                    <div class="racer-input-section">
+                        <div class="input-group">
+                            <input type="text" id="racerNameInput" placeholder="Enter racer name" maxlength="25">
+                            <select id="ageGroupInput" class="age-group-select">
+                                <option value="">Select Age Group</option>
+                                <option value="Tigers">Tigers (Kindergarten)</option>
+                                <option value="Wolves">Wolves (1st Grade)</option>
+                                <option value="Bears">Bears (2nd Grade)</option>
+                                <option value="Webelos">Webelos (3rd-4th Grade)</option>
+                                <option value="Arrow of Light">Arrow of Light (5th Grade)</option>
+                                <option value="Scouts BSA">Scouts BSA (6th-12th Grade)</option>
+                                <option value="Adults">Adults</option>
+                                <option value="Open">Open Division</option>
+                            </select>
+                            <button id="addRacerBtn" class="btn btn-primary">Add Racer</button>
+                        </div>
+                        <div class="bulk-actions">
+                            <button id="reloadRacersBtn" class="btn btn-outline" disabled>
+                                <span>🔄 Reload Last Import</span>
+                            </button>
+                            <button id="preloadTestDataBtn" class="btn btn-outline">
+                                <span>🧪 Preload Test Data</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="racers-list" id="racersList">
+                        <div class="racers-list-header">
+                            <h3>Participants (<span id="racerCount">0</span>)</h3>
+                            <div class="age-group-controls">
+                                <select id="ageGroupFilter" class="age-group-filter">
+                                    <option value="">All Age Groups</option>
+                                </select>
+                                <button id="bulkAssignBtn" class="btn btn-sm btn-outline">Bulk Assign</button>
+                            </div>
+                        </div>
+                        <div class="age-group-stats" id="ageGroupStats" style="display: none;"></div>
+                        <div class="racers-grid" id="racersGrid"></div>
+                    </div>
+
+                    <div class="setup-actions">
+                        <button id="startTournamentBtn" class="btn btn-success" disabled>Start Tournament</button>
+                        <button id="clearAllBtn" class="btn btn-danger">Clear All</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Phase -->
+            <div class="tournament-phase" id="tournamentPhase" style="display: none;">
+                <div class="tournament-controls">
+                    <button id="backToSetupBtn" class="btn btn-outline">← Back to Setup</button>
+                    <div class="round-info">
+                        <span class="current-round">Round: <span id="currentRound">1</span></span>
+                        <span class="round-name" id="roundName">First Round</span>
+                    </div>
+                    <button id="resetTournamentBtn" class="btn btn-danger">Reset Tournament</button>
+                </div>
+
+                <div class="bracket-container" id="bracketContainer">
+                    <!-- Bracket will be generated here -->
+                </div>
+
+                <div class="winner-announcement" id="winnerAnnouncement" style="display: none;">
+                    <div class="winner-card">
+                        <h2>🏆 Tournament Champion</h2>
+                        <div class="winner-name" id="winnerName"></div>
+                        <div class="confetti">🎉 🎊 🏁 🎉 🎊</div>
+                        <button id="newTournamentBtn" class="btn btn-primary">New Tournament</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Pinewood Derby Tournament Bracket | Vibe Coded with ❤️ by Kevin 🍌</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

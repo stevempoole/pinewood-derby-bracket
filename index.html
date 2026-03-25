@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinewood Derby Tournament Bracket</title>
+    <title>Pinewood Derby Heat Racing</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="heat-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +14,7 @@
     <header class="header">
         <div class="container">
             <div class="header-main">
-                <h1 class="title">🏁 Pinewood Derby Tournament Bracket</h1>
+                <h1 class="title">🏁 Pinewood Derby Heat Racing</h1>
                 <div class="tournament-selector-section">
                     <select id="tournamentSelector" class="tournament-selector">
                         <option value="">Select Tournament...</option>
@@ -126,27 +127,148 @@
                 </div>
             </div>
 
-            <!-- Tournament Phase -->
-            <div class="tournament-phase" id="tournamentPhase" style="display: none;">
-                <div class="tournament-controls">
+            <!-- Heat Racing Phase -->
+            <div class="heat-racing-phase" id="heatRacingPhase" style="display: none;">
+                <!-- Race Controls -->
+                <div class="race-controls">
                     <button id="backToSetupBtn" class="btn btn-outline">← Back to Setup</button>
-                    <div class="round-info">
-                        <span class="current-round">Round: <span id="currentRound">1</span></span>
-                        <span class="round-name" id="roundName">First Round</span>
+                    <div class="race-progress">
+                        <span class="progress-text">Heat <span id="currentHeatNumber">1</span> of <span id="totalHeats">16</span></span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-percent" id="progressPercent">0%</span>
                     </div>
-                    <button id="resetTournamentBtn" class="btn btn-danger">Reset Tournament</button>
+                    <button id="resetRaceBtn" class="btn btn-danger">Reset Race</button>
                 </div>
 
-                <div class="bracket-container" id="bracketContainer">
-                    <!-- Bracket will be generated here -->
+                <!-- Current Heat Display -->
+                <div class="current-heat-section">
+                    <div class="current-heat-card">
+                        <div class="heat-header">
+                            <h2>🏁 Current Heat</h2>
+                            <div class="heat-navigation">
+                                <button id="prevHeatBtn" class="btn btn-sm btn-outline">← Previous</button>
+                                <span class="heat-selector">
+                                    Heat <select id="heatSelector" class="heat-dropdown"></select>
+                                </span>
+                                <button id="nextHeatBtn" class="btn btn-sm btn-outline">Next →</button>
+                            </div>
+                        </div>
+
+                        <div class="heat-lanes">
+                            <div class="lane lane-1">
+                                <div class="lane-header">Lane 1</div>
+                                <div class="lane-racer" id="lane1Racer">
+                                    <div class="car-number" id="lane1CarNumber">-</div>
+                                    <div class="racer-name" id="lane1RacerName">Empty</div>
+                                </div>
+                            </div>
+                            <div class="lane lane-2">
+                                <div class="lane-header">Lane 2</div>
+                                <div class="lane-racer" id="lane2Racer">
+                                    <div class="car-number" id="lane2CarNumber">-</div>
+                                    <div class="racer-name" id="lane2RacerName">Empty</div>
+                                </div>
+                            </div>
+                            <div class="lane lane-3 lane-unused">
+                                <div class="lane-header">Lane 3</div>
+                                <div class="lane-racer unused">
+                                    <div class="car-number">-</div>
+                                    <div class="racer-name">Unused</div>
+                                </div>
+                            </div>
+                            <div class="lane lane-4">
+                                <div class="lane-header">Lane 4</div>
+                                <div class="lane-racer" id="lane4Racer">
+                                    <div class="car-number" id="lane4CarNumber">-</div>
+                                    <div class="racer-name" id="lane4RacerName">Empty</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="results-entry" id="resultsEntry">
+                            <h3>Enter Heat Results</h3>
+                            <div class="finish-buttons">
+                                <div class="finish-position">
+                                    <label>🥇 1st Place (3 pts)</label>
+                                    <div class="lane-buttons">
+                                        <button class="finish-btn lane-btn" data-lane="1" data-place="first">Lane 1</button>
+                                        <button class="finish-btn lane-btn" data-lane="2" data-place="first">Lane 2</button>
+                                        <button class="finish-btn lane-btn" data-lane="4" data-place="first">Lane 4</button>
+                                    </div>
+                                </div>
+                                <div class="finish-position">
+                                    <label>🥈 2nd Place (2 pts)</label>
+                                    <div class="lane-buttons">
+                                        <button class="finish-btn lane-btn" data-lane="1" data-place="second">Lane 1</button>
+                                        <button class="finish-btn lane-btn" data-lane="2" data-place="second">Lane 2</button>
+                                        <button class="finish-btn lane-btn" data-lane="4" data-place="second">Lane 4</button>
+                                    </div>
+                                </div>
+                                <div class="finish-position">
+                                    <label>🥉 3rd Place (1 pt)</label>
+                                    <div class="lane-buttons">
+                                        <button class="finish-btn lane-btn" data-lane="1" data-place="third">Lane 1</button>
+                                        <button class="finish-btn lane-btn" data-lane="2" data-place="third">Lane 2</button>
+                                        <button class="finish-btn lane-btn" data-lane="4" data-place="third">Lane 4</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="results-actions">
+                                <button id="submitHeatBtn" class="btn btn-success" disabled>Submit Heat Results</button>
+                                <button id="clearResultsBtn" class="btn btn-outline">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Standings -->
+                    <div class="standings-card">
+                        <h3>🏆 Live Standings</h3>
+                        <div class="standings-list" id="standingsList">
+                            <!-- Standings will be populated here -->
+                        </div>
+                    </div>
                 </div>
 
-                <div class="winner-announcement" id="winnerAnnouncement" style="display: none;">
-                    <div class="winner-card">
-                        <h2>🏆 Tournament Champion</h2>
-                        <div class="winner-name" id="winnerName"></div>
-                        <div class="confetti">🎉 🎊 🏁 🎉 🎊</div>
-                        <button id="newTournamentBtn" class="btn btn-primary">New Tournament</button>
+                <!-- Heat Schedule Grid (for larger screens) -->
+                <div class="heat-schedule-section">
+                    <h3>📋 Heat Schedule</h3>
+                    <div class="heat-grid" id="heatGrid">
+                        <!-- Heat schedule will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Race Completion -->
+                <div class="race-completion" id="raceCompletion" style="display: none;">
+                    <div class="completion-card">
+                        <h2>🏁 Race Complete!</h2>
+                        <div class="podium">
+                            <div class="podium-place podium-second">
+                                <div class="place-number">2nd</div>
+                                <div class="racer-info" id="secondPlace">
+                                    <div class="name">-</div>
+                                    <div class="points">- pts</div>
+                                </div>
+                            </div>
+                            <div class="podium-place podium-first">
+                                <div class="place-number">1st</div>
+                                <div class="racer-info" id="firstPlace">
+                                    <div class="name">-</div>
+                                    <div class="points">- pts</div>
+                                </div>
+                            </div>
+                            <div class="podium-place podium-third">
+                                <div class="place-number">3rd</div>
+                                <div class="racer-info" id="thirdPlace">
+                                    <div class="name">-</div>
+                                    <div class="points">- pts</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="celebration-confetti">🎉 🏆 🎊 🏁 🎉 🏆 🎊</div>
+                        <button id="newRaceBtn" class="btn btn-primary">New Race</button>
+                        <button id="exportResultsBtn" class="btn btn-outline">Export Results</button>
                     </div>
                 </div>
             </div>
@@ -159,6 +281,7 @@
         </div>
     </footer>
 
+    <script src="heat-system.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
