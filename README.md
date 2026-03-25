@@ -1,16 +1,26 @@
-# 🏁 Pinewood Derby Tournament Bracket
+# 🏁 Pinewood Derby Heat Racing System
 
-A complete, production-ready web application for managing pinewood derby tournament brackets. Built with vanilla HTML, CSS, and JavaScript for maximum compatibility and ease of deployment.
+A complete, production-ready web application for managing pinewood derby heat racing with fair scheduling and professional scoring. Built with vanilla HTML, CSS, and JavaScript for maximum compatibility and ease of deployment.
+
+**🔥 NEW: Heat-Based Racing System** - Converted from elimination brackets to the proven heat racing format used by professional pinewood derby organizations!
 
 ## ✨ Features
 
+### 🏁 Heat Racing System (NEW!)
+- **PPN Algorithm**: Partial Perfect N scheduling ensures maximum fairness
+- **Equal Racing**: Each car races exactly 3 times with perfect lane distribution
+- **4-Lane Support**: Designed for standard pinewood derby tracks (Lane 3 unused per PPN)
+- **Points Scoring**: Professional 3-2-1 points system (3pts for 1st, 2pts for 2nd, 1pt for 3rd)
+- **Real-time Heat Management**: Current heat display with next/previous navigation
+- **Live Standings**: Real-time leaderboard with points totals and race progress
+- **Official Interface**: Touch-friendly results entry for race officials
+
 ### Tournament Management
-- **Multi-Tournament Support**: Create, manage, and switch between multiple tournaments
-- **Dynamic Bracket Generation**: Supports 4-32 participants with automatic bracket sizing
-- **Elimination Format**: Standard single-elimination tournament structure
-- **Bye Handling**: Automatically manages byes for non-power-of-2 participant counts
-- **Winner Selection**: Click-to-select winners with automatic advancement
-- **Real-time Updates**: Instant bracket updates as matches are completed
+- **Multi-Tournament Support**: Create, manage, and switch between multiple tournaments  
+- **Dynamic Heat Generation**: Supports 4-25 participants with automatic heat scheduling
+- **Fair Competition**: Every racer gets equal opportunity regardless of track conditions
+- **Professional Scoring**: Accumulative points system prevents single-race elimination
+- **Progress Tracking**: Visual heat progress and completion indicators
 
 ### 🎯 Age Group Management (New!)
 - **Age Group Assignment**: Assign racers to divisions (Tigers, Wolves, Bears, Webelos, etc.)
@@ -74,42 +84,72 @@ Simply download all files and open `index.html` directly in any modern web brows
 
 ## 📋 How to Use
 
-### Setting Up the Tournament
+### Setting Up the Race
 
-1. **Add Participants**
+1. **Add Racers**
    - Enter racer names in the input field
    - Press Enter or click "Add Racer"
    - Use Quick Setup buttons for testing (8 or 16 racers)
-   - Remove participants by clicking the × button
+   - Remove racers by clicking the × button
 
-2. **Start Tournament**
-   - Minimum 4 participants required
-   - Maximum 32 participants supported
-   - Click "Start Tournament" when ready
+2. **Start Heat Racing**
+   - Minimum 4 racers required
+   - Maximum 25 racers supported  
+   - Click "Start Heat Racing" when ready
+   - System automatically generates fair heat schedule using PPN algorithm
 
-### Running the Tournament
+### Running the Race
 
-1. **Navigate the Bracket**
-   - Matches are organized by rounds (First Round, Quarter-Final, etc.)
-   - Scroll horizontally to see all rounds on mobile devices
+1. **Heat Management**
+   - Current heat display shows which cars race in which lanes
+   - Navigate between heats using Previous/Next buttons or heat selector
+   - Each heat races 3 cars simultaneously (Lane 1, 2, and 4)
 
-2. **Select Winners**
-   - Click on the winning participant in each match
-   - Winners automatically advance to the next round
-   - Complete matches show in green with winner highlighted
+2. **Enter Results**
+   - After each heat, click lane buttons to record finish positions
+   - Award 1st place (3 points), 2nd place (2 points), 3rd place (1 point)
+   - Submit results to automatically advance to next heat
+   - Live standings update in real-time
 
-3. **Tournament Completion**
-   - Continue until all matches are completed
-   - Final winner is announced with celebration animation
-   - Option to start a new tournament
+3. **Race Completion**
+   - Continue through all heats until complete
+   - Each car will have raced exactly 3 times
+   - Final standings determined by total points
+   - Podium ceremony with top 3 finishers
 
-### Managing the Tournament
+### Managing the Race
 
-- **Reset Tournament**: Start over with same participants
-- **Back to Setup**: Return to participant management
-- **New Tournament**: Clear everything and start fresh
-- **Clone Tournament**: Create a copy with same participants
-- **Export/Import**: Save and restore tournament data
+- **Reset Race**: Clear all heat results and start over with same racers
+- **Back to Setup**: Return to racer management
+- **New Race**: Clear everything and start fresh
+- **Heat Navigation**: Jump to any heat to review or re-enter results
+- **Export Results**: Save complete race data with all heat details
+
+## 🧮 PPN Algorithm Explained
+
+The **Partial Perfect N (PPN) algorithm** ensures maximum fairness:
+
+- **Equal Races**: Every car races exactly 3 times
+- **Lane Distribution**: Each car runs once in Lane 1, once in Lane 2, and once in Lane 4  
+- **Fair Opposition**: Optimized matchups so no car faces the same opponents repeatedly
+- **Track Bias Elimination**: Equal lane exposure accounts for track conditions
+
+This is the same algorithm used by professional pinewood derby organizations worldwide.
+
+## 🏆 Why Heat Racing vs Brackets?
+
+**Heat Racing Advantages:**
+- ✅ **More Fair**: Every car gets multiple chances, accounts for track conditions
+- ✅ **More Fun**: Every racer gets to race multiple times, not eliminated after one loss
+- ✅ **More Accurate**: Points accumulation over multiple races shows true performance
+- ✅ **More Engaging**: Spectators see more racing, live standings create excitement
+- ✅ **More Professional**: Used by official BSA pinewood derby competitions
+
+**Old Bracket Problems:**
+- ❌ Single elimination unfair for young racers
+- ❌ Track conditions could eliminate best cars early  
+- ❌ Faster rounds but less racing overall
+- ❌ Half the field eliminated quickly
 
 ## 🏆 Age Group Tournament Workflow (New Feature!)
 
@@ -240,11 +280,12 @@ MIT License - feel free to use this for your events, modify it, or distribute it
 
 ## 🏆 Perfect For
 
-- **Cub Scout Pinewood Derby events**
+- **Official Cub Scout Pinewood Derby events**
+- **BSA Pack competitions**
 - **School science fair races**
-- **Community racing competitions**
-- **Family tournament nights**
-- **Any single-elimination tournament**
+- **Community racing events**
+- **Multi-division derby competitions**
+- **Any fair-racing competition that values participation over elimination**
 
 ## 🙋‍♂️ Support
 
