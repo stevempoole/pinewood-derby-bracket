@@ -606,6 +606,44 @@
     background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), transparent);
 }
 
+/* Tournament Name Section */
+.tournament-name-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+}
+
+.tournament-name-section label {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.tournament-name-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    background: white;
+    color: #2d3748;
+    transition: border-color 0.2s ease;
+}
+
+.tournament-name-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.tournament-name-input::placeholder {
+    color: #a0aec0;
+}
+
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
     :root {

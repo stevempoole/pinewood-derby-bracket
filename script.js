@@ -24,6 +24,7 @@ class HeatRacingManager {
         // Setup phase elements
         this.setupPhase = document.getElementById('setupPhase');
         this.heatRacingPhase = document.getElementById('heatRacingPhase');
+        this.tournamentNameInput = document.getElementById('tournamentNameInput');
         this.participantInput = document.getElementById('racerNameInput');
         this.addRacerBtn = document.getElementById('addRacerBtn');
         this.startTournamentBtn = document.getElementById('startTournamentBtn');
@@ -31,6 +32,7 @@ class HeatRacingManager {
         this.racersGrid = document.getElementById('racersGrid');
         this.racerCount = document.getElementById('racerCount');
         this.participantCount = document.getElementById('participantCount');
+        this.currentTournamentName = document.getElementById('currentTournamentName');
         
         // Heat racing phase elements
         this.backToSetupBtn = document.getElementById('backToSetupBtn');
@@ -103,9 +105,13 @@ class HeatRacingManager {
             }
         });
         
-        // Age group events (keeping from original)
+        // Tournament name events
+        this.tournamentNameInput?.addEventListener('input', () => this.updateTournamentName());
+        this.tournamentNameInput?.addEventListener('blur', () => this.autoSave());
+        
+        // Team management events
         this.ageGroupFilter?.addEventListener('change', () => this.filterByAgeGroup());
-        this.bulkAssignBtn?.addEventListener('click', () => this.bulkAssignAgeGroup());
+        this.bulkAssignBtn?.addEventListener('click', () => this.bulkAssignTeam());
         
         // Quick setup buttons
         document.getElementById('quickSetup8')?.addEventListener('click', () => this.quickSetup(8));
@@ -192,6 +198,8 @@ class HeatRacingManager {
     clearAll() {
         if (confirm('Clear all racers? This cannot be undone.')) {
             if (this.racersGrid) this.racersGrid.innerHTML = '';
+            if (this.tournamentNameInput) this.tournamentNameInput.value = '';
+            this.updateTournamentName();
             this.updateCounts();
             this.updateStartButton();
             this.autoSave();
@@ -527,12 +535,15 @@ class HeatRacingManager {
     updateDisplay() {
         this.updateCounts();
         this.updateStartButton();
+        this.updateTournamentName(); // Set default name
     }
     
     // Auto-save functionality
     autoSave() {
         const racers = this.getCurrentRacers();
+        const tournamentName = this.tournamentNameInput?.value?.trim() || 'Pinewood Derby';
         const saveData = {
+            tournamentName: tournamentName,
             racers: racers,
             timestamp: Date.now(),
             teams: ['Guardians', 'Knights']
@@ -595,6 +606,12 @@ class HeatRacingManager {
                 console.log('📂 Loading saved setup...', saveData.racers?.length || 0, 'racers');
                 
                 if (saveData.racers && Array.isArray(saveData.racers) && saveData.racers.length > 0) {
+                    // Restore tournament name
+                    if (saveData.tournamentName && this.tournamentNameInput) {
+                        this.tournamentNameInput.value = saveData.tournamentName;
+                        this.updateTournamentName();
+                    }
+                    
                     // Clear existing racers
                     if (this.racersGrid) {
                         this.racersGrid.innerHTML = '';
@@ -621,13 +638,91 @@ class HeatRacingManager {
         return false;
     }
     
-    // Age group functionality (keeping from original)
-    filterByAgeGroup() {
-        // Implementation for age group filtering
+    // Tournament name management
+    updateTournamentName() {
+        const name = this.tournamentNameInput?.value?.trim() || 'Pinewood Derby';
+        if (this.currentTournamentName) {
+            this.currentTournamentName.textContent = name;
+        }
+        console.log('📝 Tournament name updated:', name);
     }
     
-    bulkAssignAgeGroup() {
-        // Implementation for bulk age group assignment
+    // Team management functionality
+    filterByAgeGroup() {
+        const selectedTeam = this.ageGroupFilter?.value;
+        const racerCards = this.racersGrid?.querySelectorAll('.racer-card') || [];
+        
+        console.log('🔍 Filtering by team:', selectedTeam || 'All');
+        
+        racerCards.forEach(card => {
+            const teamBadge = card.querySelector('.team-badge');
+            const teamName = teamBadge?.textContent || '';
+            
+            if (!selectedTeam || teamName === selectedTeam) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    bulkAssignTeam() {
+        const racerCards = this.racersGrid?.querySelectorAll('.racer-card') || [];
+        
+        if (racerCards.length === 0) {
+            alert('No racers to assign teams to!');
+            return;
+        }
+        
+        // Show dialog to select team for bulk assignment
+        const team = prompt('Assign which team to ALL visible racers?\n\nEnter:\n• "Guardians" for Guardians team\n• "Knights" for Knights team\n• "Clear" to remove all team assignments');
+        
+        if (!team) {
+            console.log('❌ Bulk assign cancelled');
+            return;
+        }
+        
+        const teamNormalized = team.trim();
+        let count = 0;
+        
+        racerCards.forEach(card => {
+            // Only assign to visible cards (respects current filter)
+            if (card.style.display !== 'none') {
+                const racerInfo = card.querySelector('.racer-info');
+                const existingBadge = card.querySelector('.team-badge');
+                
+                // Remove existing team badge
+                if (existingBadge) {
+                    existingBadge.remove();
+                }
+                
+                // Add new team badge if not clearing
+                if (teamNormalized.toLowerCase() !== 'clear') {
+                    if (teamNormalized === 'Guardians' || teamNormalized === 'Knights') {
+                        const teamBadge = document.createElement('div');
+                        teamBadge.className = `team-badge team-${teamNormalized.toLowerCase()}`;
+                        teamBadge.textContent = teamNormalized;
+                        racerInfo.appendChild(teamBadge);
+                        count++;
+                    } else {
+                        alert('Invalid team name! Use "Guardians" or "Knights"');
+                        return;
+                    }
+                } else {
+                    count++;
+                }
+            }
+        });
+        
+        this.autoSave();
+        
+        if (teamNormalized.toLowerCase() === 'clear') {
+            console.log(`✅ Cleared teams from ${count} racers`);
+            alert(`Cleared teams from ${count} racers`);
+        } else {
+            console.log(`✅ Assigned ${teamNormalized} team to ${count} racers`);
+            alert(`Assigned ${teamNormalized} team to ${count} racers`);
+        }
     }
 }
 
