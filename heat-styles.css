@@ -140,13 +140,13 @@
 }
 
 .lane:not(.lane-unused):hover {
-    border-color: #667eea;
+    border-color: #1B5E1F;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 /* Lane-specific colors */
-.lane-1 { border-color: #4299e1; }
+.lane-1 { border-color: #2E8B57; }
 .lane-2 { border-color: #48bb78; }  
 .lane-4 { border-color: #ed8936; }
 
@@ -235,8 +235,8 @@
 }
 
 .finish-btn:hover {
-    border-color: #667eea;
-    background: #667eea;
+    border-color: #1B5E1F;
+    background: #1B5E1F;
     color: white;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
@@ -324,7 +324,7 @@
 .standing-item .position {
     width: 1.5rem;
     height: 1.5rem;
-    background: #667eea;
+    background: #1B5E1F;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -709,7 +709,7 @@
 
 .tournament-name-input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #1B5E1F;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 

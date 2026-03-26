@@ -9,7 +9,7 @@ body {
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2d5016 0%, #3c4043 100%);
     min-height: 100vh;
 }
 
@@ -70,7 +70,7 @@ body {
 
 .tournament-selector:focus {
     outline: none;
-    border-color: #4299e1;
+    border-color: #2E8B57;
 }
 
 .tournament-info {
@@ -205,7 +205,7 @@ body {
 
 .input-group input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #1B5E1F;
 }
 
 /* Age Group Select */
@@ -221,7 +221,7 @@ body {
 
 .age-group-select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #1B5E1F;
 }
 
 /* Bulk Actions */
@@ -298,12 +298,12 @@ body {
 }
 
 .btn-primary {
-    background: #667eea;
+    background: #1B5E1F;
     color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: #5a67d8;
+    background: #2E8B57;
     transform: translateY(-1px);
 }
 
@@ -328,12 +328,12 @@ body {
 
 .btn-outline {
     background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
+    color: #1B5E1F;
+    border: 2px solid #1B5E1F;
 }
 
 .btn-outline:hover {
-    background: #667eea;
+    background: #1B5E1F;
     color: white;
 }
 
@@ -564,7 +564,7 @@ body {
 }
 
 .participant-score {
-    background: #4299e1;
+    background: #2E8B57;
     color: white;
     padding: 0.125rem 0.5rem;
     border-radius: 12px;
@@ -656,20 +656,20 @@ body {
 }
 
 .match.drag-over {
-    border-color: #667eea;
+    border-color: #1B5E1F;
     background: #edf2f7;
 }
 
 /* Button Styles */
 .btn-accent {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #3c4043, #2c3e50);
     color: white;
     border: none;
     font-weight: 600;
 }
 
 .btn-accent:hover {
-    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+    background: linear-gradient(135deg, #2c3e50, #3c4043);
     transform: translateY(-1px);
 }
 
@@ -715,11 +715,11 @@ body {
 }
 
 .race-day-mode .btn-primary {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #1B5E1F, #2E8B57);
 }
 
 .race-day-mode .btn-primary:hover {
-    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+    background: linear-gradient(135deg, #2E8B57, #1B5E1F);
 }
 
 /* Enhanced Tournament Display */
