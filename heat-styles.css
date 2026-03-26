@@ -3,10 +3,10 @@
  * Additional styles for the heat-based racing interface
  */
 
-/* Heat Racing Phase - Improved contrast */
+/* Heat Racing Phase - Fixed contrast */
 .heat-racing-phase {
     padding: 2rem 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     min-height: 100vh;
 }
 
@@ -17,9 +17,11 @@
     justify-content: space-between;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--surface) 0%, rgba(255, 255, 255, 0.05) 100%);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 12px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .race-progress {
@@ -70,11 +72,12 @@
 }
 
 .current-heat-card {
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
     padding: 2rem;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
 }
 
 .heat-header {
@@ -114,13 +117,14 @@
 }
 
 .lane {
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
     border: 3px solid #e2e8f0;
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .lane.lane-unused {
@@ -181,10 +185,12 @@
 
 /* Results Entry */
 .results-entry {
-    background: var(--bg);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .results-entry h3 {
@@ -316,6 +322,7 @@
 .standing-item.podium {
     background: linear-gradient(135deg, #eef2ff 0%, #f7fafc 100%);
     border-color: #667eea;
+    /* Remove any size differences - keep same size as regular items */
 }
 
 .standing-item .position {
