@@ -419,9 +419,20 @@
 }
 
 .heat-item.current {
-    border-color: #1B5E1F;
-    background: rgba(27, 94, 31, 0.1);
-    box-shadow: 0 0 16px rgba(27, 94, 31, 0.3);
+    border: 3px solid #1B5E1F;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 20px rgba(27, 94, 31, 0.4), inset 0 0 0 1px rgba(27, 94, 31, 0.2);
+    transform: scale(1.02);
+}
+
+.heat-item.current .heat-number {
+    color: #1B5E1F;
+    font-weight: 800;
+}
+
+.heat-item.current .lane-assignment {
+    color: #1a202c;
+    font-weight: 600;
 }
 
 .heat-item.completed {
