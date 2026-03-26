@@ -319,11 +319,7 @@
     max-width: 100%;
 }
 
-.standing-item.podium {
-    background: linear-gradient(135deg, #eef2ff 0%, #f7fafc 100%);
-    border-color: #667eea;
-    /* Remove any size differences - keep same size as regular items */
-}
+/* Removed podium-specific styling - all standings items now identical */
 
 .standing-item .position {
     width: 1.5rem;
@@ -339,9 +335,7 @@
     flex-shrink: 0;
 }
 
-.standing-item.podium .position {
-    background: #48bb78;
-}
+/* Removed podium position styling - all position badges now identical */
 
 .racer-details {
     flex: 1;
