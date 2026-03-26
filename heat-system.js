@@ -199,10 +199,8 @@ class HeatRacingSystem {
         heat.results = results;
         heat.completed = true;
 
-        // Check if this was the current heat and advance
-        if (heatNumber === this.heats[this.currentHeatIndex].heatNumber) {
-            this.currentHeatIndex++;
-        }
+        // Always advance to the next uncompleted heat
+        this.advanceToNextHeat();
 
         // Check if race is complete
         if (this.heats.every(h => h.completed)) {
@@ -212,6 +210,21 @@ class HeatRacingSystem {
 
         this.saveState();
         return true;
+    }
+
+    /**
+     * Advance to the next uncompleted heat
+     */
+    advanceToNextHeat() {
+        // Find the next uncompleted heat
+        for (let i = 0; i < this.heats.length; i++) {
+            if (!this.heats[i].completed) {
+                this.currentHeatIndex = i;
+                return;
+            }
+        }
+        // If all heats are completed, set to end
+        this.currentHeatIndex = this.heats.length;
     }
 
     /**
