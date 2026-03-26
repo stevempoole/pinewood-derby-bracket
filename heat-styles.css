@@ -409,36 +409,38 @@
 }
 
 .heat-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     padding: 1rem;
     position: relative;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .heat-item.current {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    box-shadow: 0 0 16px var(--primary-alpha);
+    border-color: #1B5E1F;
+    background: rgba(27, 94, 31, 0.1);
+    box-shadow: 0 0 16px rgba(27, 94, 31, 0.3);
 }
 
 .heat-item.completed {
-    opacity: 0.7;
-    background: var(--surface);
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.7);
 }
 
 .heat-number {
     font-weight: 700;
-    color: var(--text);
+    color: #1a202c;
     margin-bottom: 0.75rem;
     font-size: 1.1rem;
 }
 
 .heat-lanes .lane-assignment {
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: #2d3748;
     margin-bottom: 0.25rem;
+    font-weight: 500;
 }
 
 .completed-badge {
