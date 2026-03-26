@@ -26,6 +26,7 @@ class HeatRacingManager {
         this.heatRacingPhase = document.getElementById('heatRacingPhase');
         this.tournamentNameInput = document.getElementById('tournamentNameInput');
         this.participantInput = document.getElementById('racerNameInput');
+        this.carNumberInput = document.getElementById('carNumberInput');
         this.addRacerBtn = document.getElementById('addRacerBtn');
         this.startTournamentBtn = document.getElementById('startTournamentBtn');
         this.clearAllBtn = document.getElementById('clearAllBtn');
@@ -79,6 +80,9 @@ class HeatRacingManager {
         this.participantInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addRacer();
         });
+        this.carNumberInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.addRacer();
+        });
         this.addRacerBtn?.addEventListener('click', () => this.addRacer());
         this.startTournamentBtn?.addEventListener('click', () => this.startRace());
         this.clearAllBtn?.addEventListener('click', () => this.clearAll());
@@ -119,11 +123,30 @@ class HeatRacingManager {
     }
 
     addRacer() {
-        const input = this.participantInput;
-        if (!input || !input.value.trim()) return;
+        const nameInput = this.participantInput;
+        const carInput = this.carNumberInput;
+        
+        if (!nameInput || !nameInput.value.trim()) {
+            alert('Please enter a racer name');
+            return;
+        }
 
-        const name = input.value.trim();
-        const carNumber = this.getNextCarNumber();
+        const name = nameInput.value.trim();
+        let carNumber;
+        
+        // Use custom car number if provided, otherwise auto-generate
+        if (carInput && carInput.value) {
+            carNumber = parseInt(carInput.value);
+            
+            // Check for duplicate car numbers
+            if (this.isCarNumberTaken(carNumber)) {
+                alert(`Car number ${carNumber} is already taken. Please choose a different number.`);
+                carInput.focus();
+                return;
+            }
+        } else {
+            carNumber = this.getNextCarNumber();
+        }
         
         const racer = {
             name: name,
@@ -132,7 +155,8 @@ class HeatRacingManager {
         };
 
         this.addRacerToGrid(racer);
-        input.value = '';
+        nameInput.value = '';
+        if (carInput) carInput.value = '';
         this.updateCounts();
         this.updateStartButton();
         this.autoSave();
@@ -169,6 +193,18 @@ class HeatRacingManager {
             nextNumber++;
         }
         return nextNumber;
+    }
+
+    isCarNumberTaken(carNumber) {
+        const existingCards = this.racersGrid?.querySelectorAll('.racer-card') || [];
+        const usedNumbers = Array.from(existingCards)
+            .map(card => {
+                const numberText = card.querySelector('.car-number')?.textContent || '';
+                const match = numberText.match(/Car #(\d+)/);
+                return match ? parseInt(match[1]) : 0;
+            });
+        
+        return usedNumbers.includes(carNumber);
     }
 
     getCurrentRacers() {
