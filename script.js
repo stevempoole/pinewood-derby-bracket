@@ -290,9 +290,24 @@ class HeatRacingManager {
         const progress = window.heatRacing.getRaceProgress();
         const currentHeat = window.heatRacing.getCurrentHeat();
         
-        // Update progress
-        if (this.currentHeatNumber) this.currentHeatNumber.textContent = progress.currentHeatNumber;
-        if (this.totalHeats) this.totalHeats.textContent = progress.totalHeats;
+        // Update progress and check for final heat
+        const currentHeatObj = window.heatRacing.heats[window.heatRacing.currentHeatIndex];
+        if (this.currentHeatNumber) {
+            if (currentHeatObj?.isFinalHeat) {
+                this.currentHeatNumber.textContent = 'FINAL';
+                this.currentHeatNumber.style.color = '#dc2626';
+                this.currentHeatNumber.style.fontWeight = 'bold';
+            } else {
+                this.currentHeatNumber.textContent = progress.currentHeatNumber;
+                this.currentHeatNumber.style.color = '';
+                this.currentHeatNumber.style.fontWeight = '';
+            }
+        }
+        if (this.totalHeats) {
+            // Don't count final heats in total
+            const regularHeats = window.heatRacing.heats.filter(h => !h.isFinalHeat).length;
+            this.totalHeats.textContent = regularHeats;
+        }
         if (this.progressFill) this.progressFill.style.width = `${progress.percentComplete}%`;
         if (this.progressPercent) this.progressPercent.textContent = `${progress.percentComplete}%`;
         
@@ -318,6 +333,24 @@ class HeatRacingManager {
         if (!currentHeat) {
             this.showRaceCompletion();
             return;
+        }
+
+        // Update header for final heat
+        const heatHeader = document.querySelector('.heat-header h2');
+        if (currentHeat.isFinalHeat && heatHeader) {
+            heatHeader.innerHTML = '🏆 FINAL HEAT - TIE BREAKER!';
+            heatHeader.style.color = '#dc2626';
+            heatHeader.style.background = '#fef2f2';
+            heatHeader.style.padding = '0.5rem 1rem';
+            heatHeader.style.borderRadius = '8px';
+            heatHeader.style.border = '2px solid #dc2626';
+        } else if (heatHeader) {
+            heatHeader.innerHTML = 'Current Heat';
+            heatHeader.style.color = '';
+            heatHeader.style.background = '';
+            heatHeader.style.padding = '';
+            heatHeader.style.borderRadius = '';
+            heatHeader.style.border = '';
         }
 
         // Update lane displays
@@ -447,8 +480,9 @@ class HeatRacingManager {
             const isCompleted = heat.completed;
             
             return `
-                <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}">
-                    <div class="heat-number">Heat ${heat.heatNumber}</div>
+                <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''} ${heat.isFinalHeat ? 'final-heat' : ''}">
+                    <div class="heat-number">${heat.isFinalHeat ? '🏆 FINAL HEAT' : `Heat ${heat.heatNumber}`}</div>
+                    ${heat.isFinalHeat ? '<div class="tie-breaker-label">Tie Breaker</div>' : ''}
                     <div class="heat-lanes">
                         <div class="lane-assignment">L1: ${lane1Racer?.name || 'Empty'}</div>
                         <div class="lane-assignment">L2: ${lane2Racer?.name || 'Empty'}</div>
