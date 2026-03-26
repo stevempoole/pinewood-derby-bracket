@@ -65,6 +65,7 @@ class HeatRacingManager {
         
         // Race completion elements
         this.raceCompletion = document.getElementById('raceCompletion');
+        this.completionCloseBtn = document.getElementById('completionCloseBtn');
         this.newRaceBtn = document.getElementById('newRaceBtn');
         this.exportResultsBtn = document.getElementById('exportResultsBtn');
         
@@ -99,8 +100,16 @@ class HeatRacingManager {
         this.clearResultsBtn?.addEventListener('click', () => this.clearCurrentResults());
         
         // Race completion events
+        this.completionCloseBtn?.addEventListener('click', () => this.closeRaceCompletion());
         this.newRaceBtn?.addEventListener('click', () => this.startNewRace());
         this.exportResultsBtn?.addEventListener('click', () => this.exportResults());
+        
+        // Close completion popup when clicking outside
+        this.raceCompletion?.addEventListener('click', (e) => {
+            if (e.target === this.raceCompletion) {
+                this.closeRaceCompletion();
+            }
+        });
         
         // Finish button events
         document.addEventListener('click', (e) => {
@@ -506,6 +515,12 @@ class HeatRacingManager {
             this.clearCurrentResults();
             this.raceCompletion.style.display = 'none';
             this.updateRaceDisplay();
+        }
+    }
+
+    closeRaceCompletion() {
+        if (this.raceCompletion) {
+            this.raceCompletion.style.display = 'none';
         }
     }
 

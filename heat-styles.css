@@ -482,6 +482,37 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
+.completion-card {
+    position: relative;
+}
+
+.completion-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: 2px solid #666;
+    color: #666;
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    line-height: 1;
+    z-index: 1001;
+}
+
+.completion-close-btn:hover {
+    background: #666;
+    color: white;
+    transform: scale(1.1);
+}
+
 .completion-card h2 {
     margin: 0 0 2rem 0;
     color: var(--text);

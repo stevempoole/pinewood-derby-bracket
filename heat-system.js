@@ -231,11 +231,42 @@ class HeatRacingSystem {
      * Calculate final standings
      */
     calculateFinalStandings() {
-        // Sort by total points (descending), then by name for tiebreaker
+        // Enhanced tiebreaking system for racing competitions
         this.racers.sort((a, b) => {
+            // Primary: Total points (descending)
             if (b.totalPoints !== a.totalPoints) {
                 return b.totalPoints - a.totalPoints;
             }
+
+            // Secondary: Best single race finish (1st is better than 2nd, etc.)
+            const aBestFinish = Math.min(...a.races.map(race => 
+                race.place === 'first' ? 1 : race.place === 'second' ? 2 : 3
+            ));
+            const bBestFinish = Math.min(...b.races.map(race => 
+                race.place === 'first' ? 1 : race.place === 'second' ? 2 : 3
+            ));
+            
+            if (aBestFinish !== bBestFinish) {
+                return aBestFinish - bBestFinish; // Lower is better (1st beats 2nd)
+            }
+
+            // Tertiary: Count of best finishes (more 1st places beats fewer)
+            const aFirsts = a.races.filter(race => race.place === 'first').length;
+            const bFirsts = b.races.filter(race => race.place === 'first').length;
+            
+            if (aFirsts !== bFirsts) {
+                return bFirsts - aFirsts; // More firsts is better
+            }
+
+            // Quaternary: Count of second places
+            const aSeconds = a.races.filter(race => race.place === 'second').length;
+            const bSeconds = b.races.filter(race => race.place === 'second').length;
+            
+            if (aSeconds !== bSeconds) {
+                return bSeconds - aSeconds; // More seconds is better
+            }
+
+            // Final fallback: Alphabetical by name
             return a.name.localeCompare(b.name);
         });
 
@@ -250,9 +281,39 @@ class HeatRacingSystem {
      */
     getStandings() {
         const standings = [...this.racers].sort((a, b) => {
+            // Use same enhanced tiebreaking as calculateFinalStandings
             if (b.totalPoints !== a.totalPoints) {
                 return b.totalPoints - a.totalPoints;
             }
+
+            // Best single race finish tiebreaker
+            const aBestFinish = Math.min(...a.races.map(race => 
+                race.place === 'first' ? 1 : race.place === 'second' ? 2 : 3
+            ));
+            const bBestFinish = Math.min(...b.races.map(race => 
+                race.place === 'first' ? 1 : race.place === 'second' ? 2 : 3
+            ));
+            
+            if (aBestFinish !== bBestFinish) {
+                return aBestFinish - bBestFinish;
+            }
+
+            // Count of first places tiebreaker
+            const aFirsts = a.races.filter(race => race.place === 'first').length;
+            const bFirsts = b.races.filter(race => race.place === 'first').length;
+            
+            if (aFirsts !== bFirsts) {
+                return bFirsts - aFirsts;
+            }
+
+            // Count of second places tiebreaker
+            const aSeconds = a.races.filter(race => race.place === 'second').length;
+            const bSeconds = b.races.filter(race => race.place === 'second').length;
+            
+            if (aSeconds !== bSeconds) {
+                return bSeconds - aSeconds;
+            }
+
             return a.name.localeCompare(b.name);
         });
 
