@@ -433,6 +433,7 @@ class HeatRacingManager {
             
             const isCurrent = heat.heatNumber === currentHeatIndex + 1;
             const isCompleted = heat.completed;
+            const isFinalHeat = heat.isFinalHeat;
             
             // Function to get result emoji and position for a lane
             const getResultDisplay = (laneNumber, racerName) => {
@@ -459,7 +460,8 @@ class HeatRacingManager {
             };
             
             return `
-                <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}">
+                <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''} ${isFinalHeat ? 'final-heat' : ''}">
+                    ${isFinalHeat ? '<div class="tie-breaker-label">🏆 TIE BREAKER HEAT</div>' : ''}
                     <div class="heat-number">Heat ${heat.heatNumber}${isCompleted ? ' ✅' : ''}</div>
                     <div class="heat-lanes">
                         <div class="lane-assignment"><strong>L1:</strong> ${getResultDisplay(1, lane1Racer?.name)}</div>
