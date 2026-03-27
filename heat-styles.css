@@ -17,9 +17,11 @@
     justify-content: space-between;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--surface) 0%, rgba(255, 255, 255, 0.05) 100%);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 12px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .race-progress {
@@ -33,29 +35,29 @@
 
 .progress-text {
     font-weight: 600;
-    color: var(--text);
+    color: #1a202c;
     white-space: nowrap;
 }
 
 .progress-bar {
     flex: 1;
     height: 8px;
-    background: var(--surface);
+    background: #f7fafc;
     border-radius: 4px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid #e2e8f0;
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
+    background: linear-gradient(90deg, #667eea, #764ba2);
     border-radius: 4px;
     transition: width 0.3s ease;
 }
 
 .progress-percent {
     font-weight: 600;
-    color: var(--primary);
+    color: #667eea;
     min-width: 40px;
     text-align: right;
 }
@@ -70,11 +72,12 @@
 }
 
 .current-heat-card {
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
     padding: 2rem;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
 }
 
 .heat-header {
@@ -86,7 +89,7 @@
 
 .heat-header h2 {
     margin: 0;
-    color: var(--text);
+    color: #1a202c;
     font-size: 1.5rem;
 }
 
@@ -98,10 +101,10 @@
 
 .heat-dropdown {
     padding: 0.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
-    background: var(--bg);
-    color: var(--text);
+    background: white;
+    color: #1a202c;
     font-weight: 500;
 }
 
@@ -181,15 +184,17 @@
 
 /* Results Entry */
 .results-entry {
-    background: var(--bg);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .results-entry h3 {
     margin: 0 0 1.5rem 0;
-    color: var(--text);
+    color: #1a202c;
     text-align: center;
 }
 
@@ -207,7 +212,7 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: var(--text);
+    color: #1a202c;
 }
 
 .lane-buttons {
@@ -398,7 +403,7 @@
 
 .heat-schedule-section h3 {
     margin-bottom: 1.5rem;
-    color: var(--text);
+    color: #1a202c;
 }
 
 .heat-grid {
