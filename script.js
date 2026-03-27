@@ -97,6 +97,9 @@ class HeatRacingManager {
         // Race completion events
         this.newRaceBtn?.addEventListener('click', () => this.startNewRace());
         this.exportResultsBtn?.addEventListener('click', () => this.exportResults());
+        document.getElementById('completionCloseBtn')?.addEventListener('click', () => {
+            if (this.raceCompletion) this.raceCompletion.style.display = 'none';
+        });
         
         // Finish button events
         document.addEventListener('click', (e) => {
@@ -263,6 +266,13 @@ class HeatRacingManager {
         const progress = window.heatRacing.getRaceProgress();
         const currentHeat = window.heatRacing.getCurrentHeat();
         
+        console.log('📊 updateRaceDisplay called:', {
+            currentHeat: currentHeat ? 'exists' : 'null',
+            raceCompleted: progress.raceCompleted,
+            completedHeats: progress.completedHeats,
+            totalHeats: progress.totalHeats
+        });
+        
         // Update progress
         if (this.currentHeatNumber) this.currentHeatNumber.textContent = progress.currentHeatNumber;
         if (this.totalHeats) this.totalHeats.textContent = progress.totalHeats;
@@ -283,6 +293,7 @@ class HeatRacingManager {
         
         // Check for race completion
         if (progress.raceCompleted) {
+            console.log('🚨 About to call showRaceCompletion from updateRaceDisplay');
             this.showRaceCompletion();
         }
     }
