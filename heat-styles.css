@@ -412,7 +412,7 @@
     font-size: 2rem;
     font-weight: 700;
     text-align: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #48bb78 0%, #2E8B57 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -444,7 +444,7 @@
 
 .heat-item {
     background: rgba(255, 255, 255, 0.9);
-    border: 2px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid rgba(72, 187, 120, 0.2);
     border-radius: 12px;
     padding: 1.5rem;
     position: relative;
@@ -457,28 +457,28 @@
 }
 
 .heat-item.current {
-    border-color: #667eea;
-    background: rgba(102, 126, 234, 0.1);
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    border-color: #48bb78;
+    background: rgba(72, 187, 120, 0.1);
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.3);
     transform: scale(1.02);
 }
 
 .heat-item.completed {
     opacity: 0.8;
     background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(102, 126, 234, 0.1);
+    border-color: rgba(72, 187, 120, 0.1);
 }
 
 .heat-number {
     font-weight: 700;
-    color: #667eea;
+    color: #48bb78;
     margin-bottom: 1rem;
     font-size: 1.3rem;
     text-align: center;
     padding: 0.5rem;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(72, 187, 120, 0.1);
     border-radius: 8px;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(72, 187, 120, 0.2);
 }
 
 /* Heat schedule lanes (different from current heat lanes) */
@@ -495,7 +495,7 @@
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.7);
     border-radius: 6px;
-    border: 1px solid rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(72, 187, 120, 0.1);
     display: flex;
     align-items: center;
     gap: 0.5rem;
