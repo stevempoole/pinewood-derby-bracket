@@ -214,15 +214,31 @@ class HeatRacingSystem {
         this.advanceToNextHeat();
 
         // Check if race is complete
-        if (this.heats.filter(h => !h.isFinalHeat).every(h => h.completed)) {
-            // Check for ties in top 3 and create final heat if needed
-            if (this.checkForTiesAndCreateFinalHeat()) {
-                // Final heat created, continue racing
-                return true;
-            } else {
-                // No ties, race is complete
+        const regularHeatsComplete = this.heats.filter(h => !h.isFinalHeat).every(h => h.completed);
+        
+        if (regularHeatsComplete) {
+            const finalHeat = this.heats.find(h => h.isFinalHeat);
+            
+            if (finalHeat && finalHeat.completed) {
+                // Final/tie breaker heat is also complete - race is finished!
+                console.log('🏁 Race complete! Final heat finished.');
                 this.raceCompleted = true;
                 this.calculateFinalStandings();
+            } else if (!finalHeat) {
+                // No final heat exists yet, check if we need to create one
+                if (this.checkForTiesAndCreateFinalHeat()) {
+                    // Final heat created, continue racing
+                    console.log('🏆 Tie breaker heat created');
+                    return true;
+                } else {
+                    // No ties, race is complete
+                    console.log('🏁 Race complete! No tie breakers needed.');
+                    this.raceCompleted = true;
+                    this.calculateFinalStandings();
+                }
+            } else {
+                // Final heat exists but not completed yet - keep racing
+                console.log('⏳ Waiting for tie breaker heat to complete');
             }
         }
 
