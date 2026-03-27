@@ -177,20 +177,31 @@ class HeatRacingSystem {
         };
 
         // Award points: 3 for 1st, 2 for 2nd, 1 for 3rd
+        // BUT for tie breaker heats, don't award points - just record finishing order
         const pointsMap = { first: 3, second: 2, third: 1 };
+        const isTieBreakerHeat = heat.isFinalHeat;
         
         Object.entries(results).forEach(([place, lane]) => {
             if (lane && laneToRacerId[lane]) {
                 const racerId = laneToRacerId[lane];
                 const racer = this.racers.find(r => r.id === racerId);
                 if (racer) {
-                    const points = pointsMap[place];
-                    racer.totalPoints += points;
+                    // For tie breaker heats, don't award additional points
+                    // Just record the finishing position for sorting purposes
+                    const points = isTieBreakerHeat ? 0 : pointsMap[place];
+                    
+                    if (!isTieBreakerHeat) {
+                        racer.totalPoints += points;
+                    } else {
+                        console.log(`🏆 Tie breaker result: ${racer.name} finished ${place} (no points awarded)`);
+                    }
+                    
                     racer.races.push({
                         heatNumber,
                         lane,
                         place,
-                        points
+                        points,
+                        isTieBreaker: isTieBreakerHeat
                     });
                 }
             }

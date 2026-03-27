@@ -376,6 +376,12 @@
     text-align: center;
 }
 
+/* Tie breaker badge in standings */
+.tie-breaker-badge {
+    font-size: 0.8rem;
+    margin-left: 0.25rem;
+}
+
 /* Small team badges for standings */
 .team-badge-small {
     display: inline-block;

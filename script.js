@@ -408,14 +408,18 @@ class HeatRacingManager {
             const team = racer.ageGroup || '';
             const teamBadge = team ? `<span class="team-badge-small team-${team.toLowerCase()}">${team}</span>` : '';
             
+            // Check if this racer's position was determined by a tie breaker
+            const hasTieBreakerRace = racer.races.some(race => race.isTieBreaker);
+            const tieBreakerBadge = hasTieBreakerRace ? ' <span class="tie-breaker-badge">🏆</span>' : '';
+            
             return `
             <div class="standing-item ">
                 <div class="position">${index + 1}</div>
                 <div class="racer-details">
-                    <div class="name">${racer.name} ${teamBadge}</div>
-                    <div class="car-info">Car #${racer.carNumber} • ${racer.totalPoints} pts</div>
+                    <div class="name">${racer.name} ${teamBadge}${tieBreakerBadge}</div>
+                    <div class="car-info">Car #${racer.carNumber} • ${racer.totalPoints} pts${hasTieBreakerRace ? ' (tie breaker)' : ''}</div>
                 </div>
-                <div class="races-count">${racer.races.length}/3</div>
+                <div class="races-count">${racer.races.length}</div>
             </div>`;
         }).join('');
     }
