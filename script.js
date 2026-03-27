@@ -223,8 +223,16 @@ class HeatRacingManager {
             return;
         }
 
+        // Hide race completion first (ensure it's hidden)
+        if (this.raceCompletion) {
+            this.raceCompletion.style.display = 'none';
+        }
+
         // Initialize the heat racing system
         window.heatRacing.setupRace(racers);
+        
+        // Explicitly ensure race is not completed
+        window.heatRacing.raceCompleted = false;
         
         // Switch to racing phase
         this.raceSetup = false;
@@ -449,6 +457,24 @@ class HeatRacingManager {
     }
 
     showRaceCompletion() {
+        // Double-check that race is actually completed
+        const progress = window.heatRacing.getRaceProgress();
+        const completedHeats = window.heatRacing.heats.filter(h => h.completed).length;
+        const totalHeats = window.heatRacing.heats.length;
+        
+        console.log('🏁 Race completion check:', {
+            raceCompleted: progress.raceCompleted,
+            completedHeats,
+            totalHeats,
+            allHeatsCompleted: completedHeats === totalHeats
+        });
+        
+        // Only show if ALL heats are actually completed AND the flag is set
+        if (!progress.raceCompleted || completedHeats < totalHeats) {
+            console.log('❌ Race not actually complete, aborting popup');
+            return;
+        }
+        
         const standings = window.heatRacing.getStandings();
         
         if (this.raceCompletion && standings.length >= 3) {
@@ -457,6 +483,7 @@ class HeatRacingManager {
             this.updatePodiumPlace('secondPlace', standings[1]);
             this.updatePodiumPlace('thirdPlace', standings[2]);
             
+            console.log('🎉 Showing race completion popup');
             this.raceCompletion.style.display = 'block';
         }
     }
