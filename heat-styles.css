@@ -509,6 +509,19 @@
     flex-shrink: 0;
 }
 
+/* Heat results styling */
+.heat-item.completed .lane-assignment {
+    background: rgba(72, 187, 120, 0.05);
+    border-color: rgba(72, 187, 120, 0.15);
+    font-weight: 600;
+}
+
+.heat-item.completed .heat-number {
+    color: #48bb78;
+    background: rgba(72, 187, 120, 0.15);
+    border-color: rgba(72, 187, 120, 0.3);
+}
+
 .completed-badge {
     position: absolute;
     top: 0.75rem;

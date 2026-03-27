@@ -434,13 +434,37 @@ class HeatRacingManager {
             const isCurrent = heat.heatNumber === currentHeatIndex + 1;
             const isCompleted = heat.completed;
             
+            // Function to get result emoji and position for a lane
+            const getResultDisplay = (laneNumber, racerName) => {
+                if (!isCompleted || !heat.results || !racerName) {
+                    return racerName || 'Empty';
+                }
+                
+                const results = heat.results;
+                let emoji = '';
+                let position = '';
+                
+                if (results.first === laneNumber) {
+                    emoji = '🥇';
+                    position = ' (1st)';
+                } else if (results.second === laneNumber) {
+                    emoji = '🥈';
+                    position = ' (2nd)';
+                } else if (results.third === laneNumber) {
+                    emoji = '🥉';
+                    position = ' (3rd)';
+                }
+                
+                return `${racerName}${position ? ` ${emoji}${position}` : ''}`;
+            };
+            
             return `
                 <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}">
-                    <div class="heat-number">Heat ${heat.heatNumber}</div>
+                    <div class="heat-number">Heat ${heat.heatNumber}${isCompleted ? ' ✅' : ''}</div>
                     <div class="heat-lanes">
-                        <div class="lane-assignment"><strong>L1:</strong> ${lane1Racer?.name || 'Empty'}</div>
-                        <div class="lane-assignment"><strong>L2:</strong> ${lane2Racer?.name || 'Empty'}</div>
-                        <div class="lane-assignment"><strong>L4:</strong> ${lane4Racer?.name || 'Empty'}</div>
+                        <div class="lane-assignment"><strong>L1:</strong> ${getResultDisplay(1, lane1Racer?.name)}</div>
+                        <div class="lane-assignment"><strong>L2:</strong> ${getResultDisplay(2, lane2Racer?.name)}</div>
+                        <div class="lane-assignment"><strong>L4:</strong> ${getResultDisplay(4, lane4Racer?.name)}</div>
                     </div>
                     ${isCompleted ? '<div class="completed-badge">✓</div>' : ''}
                 </div>
