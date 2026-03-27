@@ -122,6 +122,13 @@ class HeatRacingManager {
         const input = this.participantInput;
         if (!input || !input.value.trim()) return;
 
+        // Check maximum participants limit
+        const currentCount = this.racersGrid?.children.length || 0;
+        if (currentCount >= 32) {
+            alert('Maximum of 32 participants allowed!');
+            return;
+        }
+
         const name = input.value.trim();
         const carNumber = this.getNextCarNumber();
         
@@ -182,7 +189,7 @@ class HeatRacingManager {
 
     updateCounts() {
         const count = this.racersGrid?.children.length || 0;
-        if (this.racerCount) this.racerCount.textContent = count;
+        if (this.racerCount) this.racerCount.textContent = `${count}`;
         if (this.participantCount) this.participantCount.textContent = `${count} racers`;
     }
 
@@ -190,6 +197,9 @@ class HeatRacingManager {
         const count = this.racersGrid?.children.length || 0;
         if (this.startTournamentBtn) {
             this.startTournamentBtn.disabled = count < 4;
+        }
+        if (this.addRacerBtn) {
+            this.addRacerBtn.disabled = count >= 32;
             this.startTournamentBtn.textContent = count < 4 ? 
                 `Add ${4 - count} more racers` : 'Start Heat Racing';
         }
@@ -405,9 +415,9 @@ class HeatRacingManager {
                 <div class="heat-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}">
                     <div class="heat-number">Heat ${heat.heatNumber}</div>
                     <div class="heat-lanes">
-                        <div class="lane-assignment">L1: ${lane1Racer?.name || 'Empty'}</div>
-                        <div class="lane-assignment">L2: ${lane2Racer?.name || 'Empty'}</div>
-                        <div class="lane-assignment">L4: ${lane4Racer?.name || 'Empty'}</div>
+                        <div class="lane-assignment"><strong>L1:</strong> ${lane1Racer?.name || 'Empty'}</div>
+                        <div class="lane-assignment"><strong>L2:</strong> ${lane2Racer?.name || 'Empty'}</div>
+                        <div class="lane-assignment"><strong>L4:</strong> ${lane4Racer?.name || 'Empty'}</div>
                     </div>
                     ${isCompleted ? '<div class="completed-badge">✓</div>' : ''}
                 </div>

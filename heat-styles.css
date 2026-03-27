@@ -403,17 +403,26 @@
 
 .heat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 1rem;
+}
+
+@media (min-width: 1200px) {
+    .heat-grid {
+        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    }
 }
 
 .heat-item {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1rem;
+    padding: 1.5rem;
     position: relative;
     transition: all 0.2s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
 }
 
 .heat-item.current {
@@ -430,20 +439,40 @@
 .heat-number {
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     font-size: 1.1rem;
 }
 
-.heat-lanes .lane-assignment {
-    font-size: 0.85rem;
+.heat-lanes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.lane-assignment {
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: 0.25rem;
+    line-height: 1.3;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lane-assignment strong {
+    color: var(--text);
+    font-weight: 600;
+    min-width: 24px;
+    flex-shrink: 0;
 }
 
 .completed-badge {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.75rem;
+    right: 0.75rem;
     background: var(--success);
     color: white;
     width: 24px;
@@ -458,33 +487,42 @@
 
 /* Race Completion */
 .race-completion {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .completion-card {
-    background: var(--surface);
-    border-radius: 24px;
-    padding: 3rem;
-    max-width: 600px;
-    width: 90%;
+    background: white !important;
+    border-radius: 32px;
+    padding: 4rem;
+    width: 80vw !important;
+    max-width: 1200px !important;
+    min-width: 800px !important;
     text-align: center;
-    border: 2px solid var(--primary);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 4px solid #667eea !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5) !important;
+    position: relative !important;
+    margin: auto !important;
+    transform: none !important;
 }
 
 .completion-card h2 {
-    margin: 0 0 2rem 0;
-    color: var(--text);
-    font-size: 2rem;
+    margin: 0 0 3rem 0;
+    color: #1a202c !important;
+    font-size: 3.5rem !important;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Podium */
@@ -492,64 +530,90 @@
     display: flex;
     align-items: end;
     justify-content: center;
-    gap: 1rem;
-    margin: 2rem 0;
-    height: 200px;
+    gap: 2rem;
+    margin: 3rem 0;
+    height: 400px;
 }
 
 .podium-place {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
-    border-radius: 12px 12px 0 0;
-    padding: 1rem;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 20px 20px 0 0;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: end;
-    border: 2px solid var(--border);
-    min-width: 120px;
+    border: 4px solid #e2e8f0;
+    min-width: 200px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
 .podium-first {
     height: 100%;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    border-color: #FFD700;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+    border-color: #FFD700 !important;
+    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5) !important;
 }
 
 .podium-second {
     height: 80%;
-    background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
-    border-color: #C0C0C0;
+    background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%) !important;
+    border-color: #C0C0C0 !important;
+    box-shadow: 0 12px 35px rgba(192, 192, 192, 0.5) !important;
 }
 
 .podium-third {
     height: 60%;
-    background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
-    border-color: #CD7F32;
+    background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%) !important;
+    border-color: #CD7F32 !important;
+    box-shadow: 0 12px 35px rgba(205, 127, 50, 0.5) !important;
 }
 
 .place-number {
-    font-size: 1.5rem;
+    font-size: 2.5rem !important;
     font-weight: 700;
     color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin-bottom: 1.5rem;
 }
 
 .racer-info .name {
     font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.25rem;
+    color: #1a202c !important;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .racer-info .points {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+    font-size: 1.2rem !important;
+    color: #4a5568 !important;
+    font-weight: 500;
 }
 
 .celebration-confetti {
-    font-size: 2rem;
-    margin: 2rem 0;
+    font-size: 3rem !important;
+    margin: 3rem 0;
     animation: bounce 1s infinite;
+    letter-spacing: 0.5rem;
+}
+
+/* Completion Card Buttons */
+.completion-card .btn {
+    padding: 1rem 2rem !important;
+    font-size: 1.2rem !important;
+    margin: 0 1rem !important;
+    min-width: 160px !important;
+}
+
+.completion-card .btn-primary {
+    background: #48bb78 !important;
+    border: none !important;
+}
+
+.completion-card .btn-outline {
+    border: 2px solid #667eea !important;
+    color: #667eea !important;
 }
 
 @keyframes bounce {
@@ -559,7 +623,27 @@
 }
 
 /* Mobile Responsive */
+/* Mobile responsive updates for heat schedule */
 @media (max-width: 768px) {
+    .heat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .heat-item {
+        padding: 1rem;
+        min-height: 100px;
+        max-width: none;
+    }
+    
+    .heat-lanes {
+        gap: 0.4rem;
+    }
+    
+    .lane-assignment {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.5rem;
+    }
+    
     .current-heat-section {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -636,7 +720,63 @@
     }
     
     .completion-card {
-        padding: 2rem 1rem;
+        padding: 2.5rem 1.5rem;
+        width: 95% !important;
+        min-width: auto !important;
+        border-radius: 24px;
+    }
+    
+    .completion-card h2 {
+        font-size: 2.5rem !important;
+    }
+    
+    .podium {
+        height: 300px;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .podium-place {
+        min-width: 140px;
+        padding: 1.5rem;
+    }
+    
+    .place-number {
+        font-size: 2rem !important;
+        margin-bottom: 1rem;
+    }
+    
+    .racer-info .name {
+        font-size: 1.2rem !important;
+    }
+    
+    .celebration-confetti {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* Extra responsive adjustments */
+@media (max-width: 480px) {
+    .heat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .heat-item {
+        padding: 0.75rem;
+    }
+    
+    .heat-lanes {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .lane-assignment {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .lane-assignment:last-child {
+        border-bottom: none;
     }
 }
 
