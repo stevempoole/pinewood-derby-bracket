@@ -409,7 +409,7 @@ class HeatRacingManager {
             const teamBadge = team ? `<span class="team-badge-small team-${team.toLowerCase()}">${team}</span>` : '';
             
             return `
-            <div class="standing-item ${index < 3 ? 'podium' : ''}">
+            <div class="standing-item ">
                 <div class="position">${index + 1}</div>
                 <div class="racer-details">
                     <div class="name">${racer.name} ${teamBadge}</div>
