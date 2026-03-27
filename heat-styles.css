@@ -65,10 +65,10 @@
 /* Current Heat Section */
 .current-heat-section {
     display: grid;
-    grid-template-columns: 2fr 1.2fr;
+    grid-template-columns: 2fr 1.5fr;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    align-items: start;
+    align-items: stretch;
 }
 
 .current-heat-card {
@@ -283,11 +283,13 @@
     border-radius: 12px;
     padding: 0.75rem;
     border: 2px solid #e2e8f0;
-    height: fit-content;
+    height: 100%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     width: 100%;
-    max-width: 300px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .standings-card h3 {
@@ -296,12 +298,15 @@
     text-align: center;
     font-size: 1rem;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .standings-list {
     display: flex;
     flex-direction: column;
     gap: 0.01rem;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .standing-item {
