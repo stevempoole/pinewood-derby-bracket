@@ -296,10 +296,10 @@ body {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 0.75rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative;
     transition: all 0.2s;
+    padding-top: 1rem;
+    padding-right: 2.5rem;
 }
 
 .racer-card:hover {
@@ -311,6 +311,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    width: 100%;
 }
 
 .racer-name {
@@ -344,21 +345,32 @@ body {
 .age-group-adults .racer-age-group { background: #fed7e2; color: #97266d; }
 .age-group-open .racer-age-group { background: #fbb6ce; color: #97266d; }
 
-.remove-racer {
-    background: #fed7d7;
-    color: #c53030;
-    border: none;
+.remove-racer-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 2px solid #fecaca;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 700;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.remove-racer:hover {
-    background: #fc8181;
+.remove-racer-btn:hover {
+    background: #dc2626;
     color: white;
+    border-color: #b91c1c;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
 }
 
 .setup-actions {
