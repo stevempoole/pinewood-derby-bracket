@@ -65,7 +65,7 @@
 /* Current Heat Section */
 .current-heat-section {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr 1.2fr;
     gap: 1.5rem;
     margin-bottom: 2rem;
     align-items: start;
@@ -301,18 +301,18 @@
 .standings-list {
     display: flex;
     flex-direction: column;
-    gap: 0.02rem;
+    gap: 0.01rem;
 }
 
 .standing-item {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.125rem 0.25rem;
+    gap: 0.2rem;
+    padding: 0.1rem 0.2rem;
     background: #f7fafc;
-    border-radius: 4px;
+    border-radius: 3px;
     border: 1px solid #e2e8f0;
-    min-height: 28px;
+    min-height: 22px;
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
@@ -324,8 +324,8 @@
 }
 
 .standing-item .position {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
     background: #667eea;
     color: white;
     border-radius: 50%;
@@ -333,7 +333,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.6rem;
+    font-size: 0.5rem;
     flex-shrink: 0;
 }
 
@@ -349,8 +349,8 @@
 .racer-details .name {
     font-weight: 600;
     color: #1a202c;
-    font-size: 0.65rem;
-    line-height: 1.1;
+    font-size: 0.55rem;
+    line-height: 1;
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -358,7 +358,7 @@
 }
 
 .racer-details .car-info {
-    font-size: 0.55rem;
+    font-size: 0.45rem;
     color: #718096;
     line-height: 1;
     margin: 0;
@@ -368,11 +368,11 @@
 }
 
 .races-count {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     color: #718096;
     font-weight: 500;
     flex-shrink: 0;
-    width: 1.5rem;
+    width: 1.2rem;
     text-align: center;
 }
 
