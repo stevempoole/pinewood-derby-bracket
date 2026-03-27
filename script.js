@@ -281,7 +281,11 @@ class HeatRacingManager {
 
     updateCurrentHeatDisplay(currentHeat) {
         if (!currentHeat) {
-            this.showRaceCompletion();
+            // Only show completion if race is actually completed
+            const progress = window.heatRacing.getRaceProgress();
+            if (progress.raceCompleted) {
+                this.showRaceCompletion();
+            }
             return;
         }
 
