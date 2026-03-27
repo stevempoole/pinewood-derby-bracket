@@ -16,61 +16,21 @@
             <div class="header-main">
                 <h1 class="title">🏁 Pinewood Derby Heat Racing</h1>
                 <div class="tournament-selector-section">
-                    <select id="tournamentSelector" class="tournament-selector">
-                        <option value="">Select Tournament...</option>
-                    </select>
-                    <button id="raceDayModeBtn" class="btn btn-accent">🏁 Race Day Mode</button>
+                    <!-- Tournament selector removed - single tournament system -->
                 </div>
             </div>
             <div class="tournament-info">
                 <div class="tournament-details">
                     <span class="current-tournament">
-                        <strong id="currentTournamentName">Tournament Name</strong>
-                        <span id="tournamentStatus" class="tournament-status">Setup</span>
+                        <strong id="currentTournamentName">Pinewood Derby</strong>
                     </span>
-                    <span class="date" id="tournamentDate"></span>
                     <span class="participants" id="participantCount">0 racers</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Tournament Management Section -->
-    <section id="tournamentManagement" class="tournament-management">
-        <div class="container">
-            <div class="management-card">
-                <h2>Tournament Management</h2>
-                <div class="management-actions">
-                    <button id="newTournamentBtn" class="btn btn-primary">
-                        <span>➕ New Tournament</span>
-                    </button>
-                    <button id="cloneTournamentBtn" class="btn btn-outline" disabled>
-                        <span>📋 Clone Tournament</span>
-                    </button>
-                    <button id="createByAgeGroupBtn" class="btn btn-accent" disabled>
-                        <span>🎯 Create Tournaments by Age Group</span>
-                    </button>
-                    <button id="deleteTournamentBtn" class="btn btn-danger" disabled>
-                        <span>🗑️ Delete Tournament</span>
-                    </button>
-                    <button id="exportTournamentBtn" class="btn btn-outline" disabled>
-                        <span>📤 Export Tournament</span>
-                    </button>
-                    <button id="importTournamentBtn" class="btn btn-outline">
-                        <span>📥 Import Tournament</span>
-                    </button>
-                    <button id="importRacersBtn" class="btn btn-outline">
-                        <span>👥 Import Racers</span>
-                    </button>
-                    <button id="downloadTemplateBtn" class="btn btn-outline">
-                        <span>📋 Download Template</span>
-                    </button>
-                </div>
-                <input type="file" id="importFileInput" accept=".json" style="display: none;">
-                <input type="file" id="importRacersInput" accept=".json,.csv" style="display: none;">
-            </div>
-        </div>
-    </section>
+    <!-- Removed Tournament Management Section - was non-functional -->
 
     <main class="main">
         <div class="container">
@@ -87,6 +47,7 @@
                     <div class="racer-input-section">
                         <div class="input-group">
                             <input type="text" id="racerNameInput" placeholder="Enter racer name" maxlength="25">
+                            <input type="number" id="carNumberInput" placeholder="Car #" min="1" max="999" class="car-number-input">
                             <select id="ageGroupInput" class="age-group-select">
                                 <option value="">Select Team</option>
                                 <option value="Guardians">Guardians (3rd-4th Grade)</option>
@@ -245,6 +206,7 @@
                 <!-- Race Completion -->
                 <div class="race-completion" id="raceCompletion" style="display: none;">
                     <div class="completion-card">
+                        <button class="completion-close-btn" id="completionCloseBtn">×</button>
                         <h2>🏁 Race Complete!</h2>
                         <div class="podium">
                             <div class="podium-place podium-second">
