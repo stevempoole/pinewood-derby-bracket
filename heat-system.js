@@ -37,7 +37,7 @@ class HeatRacingSystem {
 
     /**
      * Generate PPN heat schedule
-     * Each car races exactly 3 times: once in lane 1, lane 2, and lane 4
+     * Each car races exactly 3 times: once in lane 1, lane 2, and lane 3
      * @param {number} carCount - Number of cars in the race
      */
     generatePPNSchedule(carCount) {
@@ -49,14 +49,14 @@ class HeatRacingSystem {
                 heatNumber: heatNum,
                 lane1: 0,
                 lane2: 0,
-                lane3: 0, // Unused in PPN system
-                lane4: 0,
+                lane3: 0,
+                lane4: 0, // Unused in PPN system
                 results: { first: null, second: null, third: null },
                 completed: false
             };
 
             // Calculate lane assignments based on PPN algorithm
-            // This ensures each car gets exactly one race in each lane (1, 2, 4)
+            // This ensures each car gets exactly one race in each lane (1, 2, 3)
             
             // Lane 1: Rotating assignment
             heat.lane1 = ((heatNum - 1) % carCount) + 1;
@@ -64,15 +64,15 @@ class HeatRacingSystem {
             // Lane 2: Offset rotation for opposition
             heat.lane2 = ((heatNum - 1 + Math.floor(carCount / 3)) % carCount) + 1;
             
-            // Lane 4: Second offset for maximum opposition diversity  
-            heat.lane4 = ((heatNum - 1 + Math.floor(carCount * 2 / 3)) % carCount) + 1;
+            // Lane 3: Second offset for maximum opposition diversity  
+            heat.lane3 = ((heatNum - 1 + Math.floor(carCount * 2 / 3)) % carCount) + 1;
 
             // Ensure no car races against itself
             if (heat.lane2 === heat.lane1) {
                 heat.lane2 = (heat.lane2 % carCount) + 1;
             }
-            if (heat.lane4 === heat.lane1 || heat.lane4 === heat.lane2) {
-                heat.lane4 = ((heat.lane4 + 1) % carCount) + 1;
+            if (heat.lane3 === heat.lane1 || heat.lane3 === heat.lane2) {
+                heat.lane3 = ((heat.lane3 + 1) % carCount) + 1;
             }
 
             heats.push(heat);
@@ -92,21 +92,21 @@ class HeatRacingSystem {
         
         // Initialize lane counters
         for (let car = 1; car <= carCount; car++) {
-            laneCount[car] = { lane1: 0, lane2: 0, lane4: 0 };
+            laneCount[car] = { lane1: 0, lane2: 0, lane3: 0 };
         }
 
         // Count current lane assignments
         heats.forEach(heat => {
             if (heat.lane1) laneCount[heat.lane1].lane1++;
             if (heat.lane2) laneCount[heat.lane2].lane2++;
-            if (heat.lane4) laneCount[heat.lane4].lane4++;
+            if (heat.lane3) laneCount[heat.lane3].lane3++;
         });
 
         // Adjust assignments to ensure perfect distribution
         // This is a simplified optimization - the full PPN algorithm is more complex
         heats.forEach((heat, index) => {
             // Ensure each car appears in exactly 3 heats total
-            const carsInHeat = [heat.lane1, heat.lane2, heat.lane4].filter(car => car > 0);
+            const carsInHeat = [heat.lane1, heat.lane2, heat.lane3].filter(car => car > 0);
             
             // If we have fewer than 3 cars, add one more
             if (carsInHeat.length < 3 && carCount > 3) {
@@ -120,8 +120,8 @@ class HeatRacingSystem {
                         } else if (carLanes.lane2 === 0 && heat.lane2 === 0) {
                             heat.lane2 = car;
                             break;
-                        } else if (carLanes.lane4 === 0 && heat.lane4 === 0) {
-                            heat.lane4 = car;
+                        } else if (carLanes.lane3 === 0 && heat.lane3 === 0) {
+                            heat.lane3 = car;
                             break;
                         }
                     }
@@ -144,8 +144,8 @@ class HeatRacingSystem {
             racers: {
                 lane1: this.getRacerInfo(heat.lane1),
                 lane2: this.getRacerInfo(heat.lane2),
-                lane3: null, // Lane 3 unused
-                lane4: this.getRacerInfo(heat.lane4)
+                lane3: this.getRacerInfo(heat.lane3),
+                lane4: null // Lane 4 unused
             }
         };
     }
@@ -173,7 +173,7 @@ class HeatRacingSystem {
         const laneToRacerId = {
             1: heat.lane1,
             2: heat.lane2,
-            4: heat.lane4
+            3: heat.lane3
         };
 
         // Award points: 3 for 1st, 2 for 2nd, 1 for 3rd
@@ -303,8 +303,8 @@ class HeatRacingSystem {
             tiedRacers: tiedRacers.map(r => r.id),
             lane1: tiedRacers[0]?.id || 0,
             lane2: tiedRacers[1]?.id || 0,
-            lane3: 0, // Unused
-            lane4: tiedRacers[2]?.id || 0,
+            lane3: tiedRacers[2]?.id || 0,
+            lane4: 0, // Unused
             results: { first: null, second: null, third: null },
             completed: false
         };
