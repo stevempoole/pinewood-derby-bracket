@@ -52,8 +52,8 @@ class HeatRacingManager {
         this.lane1RacerName = document.getElementById('lane1RacerName');
         this.lane2CarNumber = document.getElementById('lane2CarNumber');
         this.lane2RacerName = document.getElementById('lane2RacerName');
-        this.lane4CarNumber = document.getElementById('lane4CarNumber');
-        this.lane4RacerName = document.getElementById('lane4RacerName');
+        this.lane3CarNumber = document.getElementById('lane3CarNumber');
+        this.lane3RacerName = document.getElementById('lane3RacerName');
         
         // Results entry elements
         this.resultsEntry = document.getElementById('resultsEntry');
@@ -311,7 +311,7 @@ class HeatRacingManager {
         // Update lane displays
         this.updateLaneDisplay(1, currentHeat.racers.lane1);
         this.updateLaneDisplay(2, currentHeat.racers.lane2);
-        this.updateLaneDisplay(4, currentHeat.racers.lane4);
+        this.updateLaneDisplay(3, currentHeat.racers.lane3);
         
         // Show/hide results entry based on completion status
         const heat = window.heatRacing.heats.find(h => h.heatNumber === currentHeat.heatNumber);
@@ -433,7 +433,7 @@ class HeatRacingManager {
         this.heatGrid.innerHTML = heats.map(heat => {
             const lane1Racer = window.heatRacing.getRacerInfo(heat.lane1);
             const lane2Racer = window.heatRacing.getRacerInfo(heat.lane2);
-            const lane4Racer = window.heatRacing.getRacerInfo(heat.lane4);
+            const lane3Racer = window.heatRacing.getRacerInfo(heat.lane3);
             
             const isCurrent = heat.heatNumber === currentHeatIndex + 1;
             const isCompleted = heat.completed;
@@ -470,7 +470,7 @@ class HeatRacingManager {
                     <div class="heat-lanes">
                         <div class="lane-assignment"><strong>L1:</strong> ${getResultDisplay(1, lane1Racer?.name)}</div>
                         <div class="lane-assignment"><strong>L2:</strong> ${getResultDisplay(2, lane2Racer?.name)}</div>
-                        <div class="lane-assignment"><strong>L4:</strong> ${getResultDisplay(4, lane4Racer?.name)}</div>
+                        <div class="lane-assignment"><strong>L3:</strong> ${getResultDisplay(3, lane3Racer?.name)}</div>
                     </div>
                     ${isCompleted ? '<div class="completed-badge">✓</div>' : ''}
                 </div>
